@@ -1,3 +1,18 @@
+# Libraries for the Modular Z80 Computer.
+# Copyright (c) 2020 Jay Valentine.
+#
+# Set of tasks to allow dependent applications to automatically build these libraries
+# as part of the build process.
+#
+# To add a library as a dependency to a rake task, 'load' this file as below:
+#
+# load '<dir>/tasks.rake'
+#
+# A dependency can then be added using the 'lib' namespace, e.g.
+#
+# task 'build' => 'lib:stdlib' do ...
+#
+
 CLK_SPEED_HZ = 3_686_400
 
 HERE = __dir__
