@@ -1,0 +1,15 @@
+# Auto-generated files
+*.inc
+
+*tmp/
+
+# Built artefacts
+*.o
+*.hex
+*.bin
+*.diss
+*.err
+
+# Libraries
+*.lib
+
