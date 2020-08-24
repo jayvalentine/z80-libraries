@@ -1,18 +1,13 @@
-require 'rake/clean'
-
 CLK_SPEED_HZ = 3_686_400
 
 HERE = __dir__
 CONFIG = File.expand_path(File.join(HERE, 'config/modularz80.cfg'))
 
-CLEAN.include("**/*.o", "**/*.bin", "**/*.hex", "**/*.diss")
-CLEAN.include("**/tmp")
-
 LIB_INCLUDE = File.join(HERE, 'include')
 
 LIB_EXCLUDE = ["config", "include", "crt0", ".lib", "tmp"]
 
-CRT0 = FileList.new(File.join(HERE, 'lib/crt0.asm'))
+CRT0 = File.join(HERE, 'crt0.o')
 
 rule ".o" => ".c" do |t|
     system("zcc +#{CONFIG} -compiler=sccz80 -O2 -c -o #{t.name} #{t.source}")
