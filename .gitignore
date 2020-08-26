@@ -1,5 +1,4 @@
-# Auto-generated files
-*.inc
+src/**/*.inc
 
 *tmp/
 
