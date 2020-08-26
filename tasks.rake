@@ -19,6 +19,7 @@ HERE = __dir__
 CONFIG = File.expand_path(File.join(HERE, 'config/modularz80.cfg'))
 
 LIB_INCLUDE = File.join(HERE, 'include')
+LIB = HERE
 
 LIB_EXCLUDE = ["config", "include", "crt0", ".lib", "tmp"]
 
@@ -54,8 +55,8 @@ namespace 'lib' do
         dependencies = Rake::FileList.new([File.join(HERE, "src", lib, "*.asm"), File.join(HERE, "src", lib, "*.c")])
         
         desc "Build library '#{lib}'"
-        task lib => ["prebuild_#{lib}", dependencies.ext('.o')] do
-            system("z80asm -x#{lib}.lib #{dependencies.ext('.o').to_a.join(" ")}")
+        task lib => (["prebuild_#{lib}"] + dependencies.ext('.o')) do
+            system("z80asm -x#{File.join(HERE, lib)}.lib #{dependencies.ext('.o').to_a.join(" ")}")
         end
     end
 end
