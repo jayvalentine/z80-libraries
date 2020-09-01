@@ -170,11 +170,11 @@ __printf_unsigned_decimal:
     ld      A, C
 
     ld      C, -100
-    call    __ud1
+    call    __printdigit
     ld      C, -10
-    call    __ud1
+    call    __printdigit
     ld      C, -1
-    call    __ud1
+    call    __printdigit_always ; Don't want to omit 0 for final digit.
 
     pop     HL
 
@@ -206,16 +206,36 @@ __printf_done:
     pop     AF
     ret
 
-__ud1:
+__printdigit:
     ld      L, '0'-1
-__ud2:
+__printdigit2:
     inc     L
     add     A, C
-    jr      c, __ud2
+    jr      c, __printdigit2
     sub     C
 
-    ; Decimal representation now in L.
     push    AF
+    ld      A, L
+    cp      '0'
+    jp      z, __printdigit3
+
+    ; Decimal representation now in L.
+    zsys(SWRITE)
+
+__printdigit3:
+    pop     AF
+    ret
+
+__printdigit_always:
+    ld      L, '0'-1
+__printdigit_always2:
+    inc     L
+    add     A, C
+    jr      c, __printdigit_always2
+    sub     C
+
+    push    AF
+    ; Decimal representation now in L.
     zsys(SWRITE)
     pop     AF
     ret
