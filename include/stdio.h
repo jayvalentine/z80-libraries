@@ -20,3 +20,9 @@ char     getchar(void);
 // gets
 // Gets a newline-terminated string of input from standard input (serial port).
 char *   gets(char *s) __z88dk_fastcall;
+
+// printf
+// Prints a formatted string to standard output.
+// Currently only the most basic %u (unsigned integer) format is provided,
+// with no provision for spacing/padding.
+int     printf(const char *format, ...);

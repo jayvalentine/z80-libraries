@@ -4,6 +4,7 @@
     PUBLIC  _gets
     PUBLIC  _putchar
     PUBLIC  _getchar
+    PUBLIC  _printf
 
     ; Syscall macro.
 define(zsys, `ld      A, $1 << 1
@@ -80,4 +81,41 @@ __gets_done:
     ; Return.
     pop     HL
     pop     AF
+    ret
+
+_printf:
+    push    HL
+    push    AF
+
+    ; A holds number of variadic args, apparently?
+
+    ; Calculate number of bytes of variadic args.
+    ; This is 2*A.
+    ld      H, 0
+    sla     A ; FIXME: Won't work for more than 127 arguments.
+    add     6 ; Also skip past return value and saved HL/AF.
+    ld      L, A
+
+    ; Add to stack pointer.
+    add     HL, SP
+
+    ; HL now points to first parameter (format string pointer).
+    ; Load into DE.
+    push    DE
+    dec     HL
+    ld      D, (HL)
+    dec     HL
+    ld      E, (HL)
+
+    ; DE now points to format string,
+    ; HL points to first variadic arg.
+
+    ; FIXME: Let's be easy and just print the format string for now.
+    push    DE
+    pop     HL
+    call    _puts
+
+    pop     DE
+    pop     AF
+    pop     HL
     ret
