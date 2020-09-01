@@ -85,7 +85,11 @@ __gets_done:
 
 _printf:
     push    HL
+    push    BC
     push    AF
+
+    ; Initially not in "formatting" state.
+    ld      B, 0
 
     ; A holds number of variadic args, apparently?
 
@@ -93,7 +97,7 @@ _printf:
     ; This is 2*A.
     ld      H, 0
     sla     A ; FIXME: Won't work for more than 127 arguments.
-    add     6 ; Also skip past return value and saved HL/AF.
+    add     8 ; Also skip past return value and saved HL/AF/BC.
     ld      L, A
 
     ; Add to stack pointer.
@@ -110,12 +114,75 @@ _printf:
     ; DE now points to format string,
     ; HL points to first variadic arg.
 
-    ; FIXME: Let's be easy and just print the format string for now.
-    push    DE
+__printf_loop:
+    ; Load character.
+    ld      A, (DE)
+    inc     DE
+    
+    ; Is it null?
+    cp      0
+    jp      z, __printf_done
+
+    ; Is it %?
+    cp      '%'
+    jp      nz, __printf_putchar
+
+    ld      B, 1 ; Enter "formatting" state.
+    jp      __printf_loop
+
+__printf_putchar:
+    bit     0, B
+    jp      z, __printf_noformat
+
+    ; Formatting mode.
+    ; Get next argument into BC.
+    push    BC
+    dec     HL
+    ld      B, (HL)
+    dec     HL
+    ld      C, (HL)
+
+    ; Type of format?
+    cp      'c'
+    jp      z, __printf_char
+
+    push    HL
+    ld      L, '!'
+    zsys(SWRITE)
     pop     HL
-    call    _puts
+
+    jp      __printf_formatdone
+
+__printf_char:
+    push    HL
+    ld      L, C
+    zsys(SWRITE)
+    pop     HL
+
+    jp      __printf_formatdone
+
+__printf_formatdone:
+    pop     BC
+
+    ; No longer in format mode.
+    ld      B, 0
+
+    jp      __printf_loop
+
+__printf_noformat:
+    ; Non-formatting mode. Character is in A.
+    push    HL
+    ld      L, A
+    zsys(SWRITE)
+    pop     HL
+
+    jp      __printf_loop
+
+__printf_done:
+    ; Some arbitrary return value.
+    ld      HL, 1
 
     pop     DE
+    pop     BC
     pop     AF
-    pop     HL
     ret
