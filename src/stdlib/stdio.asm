@@ -84,7 +84,6 @@ __gets_done:
     ret
 
 _printf:
-    push    HL
     push    BC
     push    AF
 
@@ -97,7 +96,7 @@ _printf:
     ; This is 2*A.
     ld      H, 0
     sla     A ; FIXME: Won't work for more than 127 arguments.
-    add     8 ; Also skip past return value and saved HL/AF/BC.
+    add     6 ; Also skip past return value and saved AF/BC.
     ld      L, A
 
     ; Add to stack pointer.
@@ -146,6 +145,9 @@ __printf_putchar:
     cp      'c'
     jp      z, __printf_char
 
+    cp      'u'
+    jp      z, __printf_unsigned_decimal
+
     push    HL
     ld      L, '!'
     zsys(SWRITE)
@@ -157,6 +159,23 @@ __printf_char:
     push    HL
     ld      L, C
     zsys(SWRITE)
+    pop     HL
+
+    jp      __printf_formatdone
+
+__printf_unsigned_decimal:
+    push    HL
+
+    ; FIXME: Only handles values <=255 atm.
+    ld      A, C
+
+    ld      C, -100
+    call    __ud1
+    ld      C, -10
+    call    __ud1
+    ld      C, -1
+    call    __ud1
+
     pop     HL
 
     jp      __printf_formatdone
@@ -184,5 +203,19 @@ __printf_done:
 
     pop     DE
     pop     BC
+    pop     AF
+    ret
+
+__ud1:
+    ld      L, '0'-1
+__ud2:
+    inc     L
+    add     A, C
+    jr      c, __ud2
+    sub     C
+
+    ; Decimal representation now in L.
+    push    AF
+    zsys(SWRITE)
     pop     AF
     ret
