@@ -97,7 +97,7 @@ _printf:
     ; This is 2*A.
     ld      H, 0
     sla     A ; FIXME: Won't work for more than 127 arguments.
-    add     10 ; Also skip past return value and saved AF/BC.
+    add     8 ; Also skip past return value and saved AF/BC.
     ld      L, A
 
     ; Add to stack pointer.
