@@ -86,6 +86,7 @@ __gets_done:
 _printf:
     push    BC
     push    AF
+    push    DE
 
     ; Initially not in "formatting" state.
     ld      B, 0
@@ -96,7 +97,7 @@ _printf:
     ; This is 2*A.
     ld      H, 0
     sla     A ; FIXME: Won't work for more than 127 arguments.
-    add     6 ; Also skip past return value and saved AF/BC.
+    add     10 ; Also skip past return value and saved AF/BC.
     ld      L, A
 
     ; Add to stack pointer.
@@ -104,7 +105,6 @@ _printf:
 
     ; HL now points to first parameter (format string pointer).
     ; Load into DE.
-    push    DE
     dec     HL
     ld      D, (HL)
     dec     HL
