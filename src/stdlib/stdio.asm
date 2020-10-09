@@ -141,12 +141,17 @@ __printf_putchar:
     dec     HL
     ld      C, (HL)
 
+    ; FIXME: Padding?
+
     ; Type of format?
     cp      'c'
     jp      z, __printf_char
 
     cp      'u'
     jp      z, __printf_unsigned_decimal
+
+    cp      'x'
+    jp      z, __printf_unsigned_hex_lower
 
     push    HL
     ld      L, '!'
@@ -157,10 +162,11 @@ __printf_putchar:
 
 __printf_char:
     push    HL
+    
     ld      L, C
     zsys(SWRITE)
-    pop     HL
 
+    pop     HL
     jp      __printf_formatdone
 
 __printf_unsigned_decimal:
@@ -177,7 +183,27 @@ __printf_unsigned_decimal:
     call    __printdigit_always ; Don't want to omit 0 for final digit.
 
     pop     HL
+    jp      __printf_formatdone
 
+__printf_unsigned_hex_lower:
+    push    HL
+
+    ; Print top digit
+    ; FIXME: Only handles values <=255 atm.
+    ld      A, C
+
+    srl     A
+    srl     A
+    srl     A
+    srl     A
+    call    __printhex
+
+    ; Print lower digit
+    ld      A, C
+    and     A, $0f
+    call    __printhex
+
+    pop     HL
     jp      __printf_formatdone
 
 __printf_formatdone:
@@ -202,8 +228,8 @@ __printf_done:
     ld      HL, 1
 
     pop     DE
-    pop     BC
     pop     AF
+    pop     BC
     ret
 
 __printdigit:
@@ -238,4 +264,21 @@ __printdigit_always2:
     ; Decimal representation now in L.
     zsys(SWRITE)
     pop     AF
+    ret
+
+__printhex:
+    ; 0-9?
+    cp      10
+    jp      nc, __printhex_af
+
+    add     A, '0'
+    ld      L, A
+    zsys(SWRITE)
+    ret
+
+__printhex_af:
+    sub     A, 10 ; Map 10-15 to 0-5 range.
+    add     A, 'a'
+    ld      L, A
+    zsys(SWRITE)
     ret
