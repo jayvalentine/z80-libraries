@@ -216,7 +216,10 @@ __printf_string:
     ; Get string pointer into HL and print.
     push    BC
     pop     HL
+    
+    push    DE
     call    _puts
+    pop     DE
 
     pop     HL
     jp      __printf_formatdone
