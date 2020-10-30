@@ -1,7 +1,8 @@
-    PUBLIC  strcmp
+    PUBLIC  _strcmp
+    PUBLIC  _memcpy
     
     ; int strcmp(const char *s1, const char *s2)
-strcmp:
+_strcmp:
     push    BC
     push    DE
     push    AF
@@ -24,33 +25,63 @@ strcmp:
     ld      H, B
     ld      L, C
 
-_strcmp_compare:
+__strcmp_compare:
     ld      A, (DE)
     ld      C, (HL)
     cp      C
 
     ; If non-zero, the strings are different.
-    jp      nz, _strcmp_neq
+    jp      nz, __strcmp_neq
 
     ; Otherwise, if null they are equal.
     cp      0
-    jp      z, _strcmp_eq
+    jp      z, __strcmp_eq
 
     ; Not reached end of string, equal so far.
     ; Increment pointers and loop.
     inc     HL
     inc     DE
-    jp      _strcmp_compare
+    jp      __strcmp_compare
 
-_strcmp_eq:
+__strcmp_eq:
     ld      HL, 0
-    jp      _strcmp_done
+    jp      __strcmp_done
 
-_strcmp_neq:
+__strcmp_neq:
     ld      HL, 1
 
-_strcmp_done:
+__strcmp_done:
     pop     AF
     pop     DE
     pop     BC
+    ret
+
+    ; void * memcpy(char * dest, const char * src, size_t n)
+_memcpy:
+    ld      HL, 2
+    add     HL, SP
+
+    ; Set IX to start of parameter region.
+    push    HL
+    pop     IX
+
+    ; n into BC
+    ld      C, (IX+0)
+    ld      B, (IX+1)
+
+    ; src into HL
+    ld      L, (IX+2)
+    ld      H, (IX+3)
+
+    ; dest into DE
+    ld      E, (IX+4)
+    ld      D, (IX+5)
+
+    ; Do the copy.
+    ldir
+
+    ; Return value is dest.
+    ld      L, (IX+4)
+    ld      H, (IX+5)
+
     ret
