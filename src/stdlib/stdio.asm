@@ -14,9 +14,6 @@ define(zsys, `ld      A, $1 << 1
     defc    SREAD  = 1
 
 _puts:
-    push    AF
-    push    DE
-
     push    HL
     pop     DE
 
@@ -35,9 +32,6 @@ __puts_loop:
     jp      __puts_loop
 
 __puts_done:
-    pop     DE
-    pop     AF
-
     ; Successful, return 0.
     ld      HL, 0
     ret
@@ -61,26 +55,33 @@ _getchar:
     ret
 
 _gets:
-    push    AF
     push    HL
+    pop     DE
 
+__gets_loop:
     ; Get a char from serial port and test
     ; to see if it's a newline.
     zsys(SREAD)
     cp      $0a
     jp      z, __gets_done
+    cp      $0d
+    jp      z, __gets_done
 
     ; Not newline, so load into buffer.
-    ld      (HL), A
-    inc     HL
+    ld      (DE), A
+    inc     DE
+    ld      L, A
+    call    _putchar
+    jp      __gets_loop
 
 __gets_done:
     ; Terminating null character.
-    ld      (HL), 0
+    ld      A, 0
+    ld      (DE), A
 
-    ; Return.
-    pop     HL
-    pop     AF
+    ld      HL, __newline
+    call    _puts
+
     ret
 
 _printf:
@@ -282,3 +283,7 @@ __printhex_af:
     ld      L, A
     zsys(SWRITE)
     ret
+
+__newline:
+    defm    "\n\r"
+    defb    0
