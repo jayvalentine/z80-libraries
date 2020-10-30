@@ -154,6 +154,9 @@ __printf_putchar:
     cp      'x'
     jp      z, __printf_unsigned_hex_lower
 
+    cp      's'
+    jp      z, __printf_string
+
     push    HL
     ld      L, '!'
     zsys(SWRITE)
@@ -203,6 +206,17 @@ __printf_unsigned_hex_lower:
     ld      A, C
     and     A, $0f
     call    __printhex
+
+    pop     HL
+    jp      __printf_formatdone
+
+__printf_string:
+    push    HL
+    
+    ; Get string pointer into HL and print.
+    push    BC
+    pop     HL
+    call    _puts
 
     pop     HL
     jp      __printf_formatdone
