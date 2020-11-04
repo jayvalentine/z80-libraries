@@ -2,9 +2,11 @@
 // Implementation for Modular-Z80 platform.
 // Copyright (c) Jay Valentine 2020.
 
+#include <stdint.h>
+
 #define NULL 0
 
-typedef unsigned int size_t;
+typedef uint16_t size_t;
 
 int strcmp(const char *s1, const char *s2);
 char * strtok(char * s1, const char * s2);
