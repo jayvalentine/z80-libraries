@@ -9,4 +9,4 @@
 void dwrite(char * buf, uint32_t sector);
 void dread(char * buf, uint32_t sector);
 
-#endif _SYSCALL_H
+#endif /* _SYSCALL_H */
