@@ -14,6 +14,8 @@
     defc    FWRITE = 12
     defc    FCLOSE = 14
 
+    defc    DINFO = 16
+
     ; void syscall_dwrite(char * buf, uint32_t sector)
 _syscall_dwrite:
     ; Get parameters.
@@ -62,6 +64,14 @@ _syscall_dread:
 
     ; Call dread syscall.
     ld      A, DREAD
+    rst     48
+
+    ret
+
+    ; DiskInfo_T * syscall_dinfo(void)
+_syscall_dinfo:
+    ; Call dinfo syscall.
+    ld      A, DINFO
     rst     48
 
     ret
