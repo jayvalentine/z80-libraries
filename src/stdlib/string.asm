@@ -1,5 +1,6 @@
     PUBLIC  _strcmp
     PUBLIC  _strtok
+    PUBLIC  _strlen
     PUBLIC  _memcpy
     PUBLIC  _memset
     
@@ -194,6 +195,26 @@ __strtok_is_sep_done:
 
 __strtok_saved_ptr:
     defs    2
+
+    ; size_t strlen(const char * s) __z88dk_fastcall
+_strlen:
+    ; Parameter is in HL. Move into DE.
+    ex      DE, HL
+
+    ld      HL, 0
+__strlen_loop:
+    ; Check if null-terminator.
+    ld      A, (DE)
+    inc     DE
+    cp      0
+    jp      z, __strlen_done
+
+    ; Not null-terminator, so increment HL and loop.
+    inc     HL
+    jp      __strlen_loop
+
+__strlen_done:
+    ret
 
     ; void * memcpy(char * dest, const char * src, size_t n)
 _memcpy:

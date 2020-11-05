@@ -7,6 +7,7 @@
 #define NULL 0
 
 int strcmp(const char *s1, const char *s2);
+size_t strlen(const char * s) __z88dk_fastcall;
 char * strtok(char * s1, const char * s2);
 
 void * memcpy(char * dst, const char * src, size_t n);
