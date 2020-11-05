@@ -1,13 +1,18 @@
     ; Wrappers for OS syscalls.
     
-    PUBLIC  _dwrite
-    PUBLIC  _dread
+    PUBLIC  _syscall_dwrite
+    PUBLIC  _syscall_dread
+    PUBLIC  _syscall_fopen
 
     defc    DWRITE = 4
     defc    DREAD = 6
 
-    ; void dwrite(char * buf, uint32_t sector)
-_dwrite:
+    defc    FOPEN = 8
+    defc    FREAD = 10
+    defc    FCLOSE = 12
+
+    ; void syscall_dwrite(char * buf, uint32_t sector)
+_syscall_dwrite:
     ; Get parameters.
     ld      HL, 2
     add     HL, SP
@@ -32,8 +37,8 @@ _dwrite:
 
     ret
 
-    ; void dread(char * buf, uint32_t sector)
-_dread:
+    ; void syscall_dread(char * buf, uint32_t sector)
+_syscall_dread:
     ; Get parameters.
     ld      HL, 2
     add     HL, SP
@@ -54,6 +59,28 @@ _dread:
 
     ; Call dread syscall.
     ld      A, DREAD
+    rst     48
+
+    ret
+
+    ; int syscall_fopen(const char * filename, uint8_t mode)
+_syscall_fopen:
+    ; Get parameters.
+    ld      HL, 2
+    add     HL, SP
+
+    push    HL
+    pop     IX
+
+    ; mode in C.
+    ld      C, (IX+0)
+
+    ; filename in HL
+    ld      L, (IX+2)
+    ld      H, (IX+3)
+
+    ; fopen syscall.
+    ld      A, FOPEN
     rst     48
 
     ret
