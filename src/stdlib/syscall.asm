@@ -3,13 +3,16 @@
     PUBLIC  _syscall_dwrite
     PUBLIC  _syscall_dread
     PUBLIC  _syscall_fopen
+    PUBLIC  _syscall_fread
+    PUBLIC  _syscall_fclose
 
     defc    DWRITE = 4
     defc    DREAD = 6
 
     defc    FOPEN = 8
     defc    FREAD = 10
-    defc    FCLOSE = 12
+    defc    FWRITE = 12
+    defc    FCLOSE = 14
 
     ; void syscall_dwrite(char * buf, uint32_t sector)
 _syscall_dwrite:
@@ -81,6 +84,49 @@ _syscall_fopen:
 
     ; fopen syscall.
     ld      A, FOPEN
+    rst     48
+
+    ret
+
+    ; size_t syscall_fread(char * ptr, size_t n, int fd)
+_syscall_fread:
+    ; Get parameters
+    ld      HL, 2
+    add     HL, SP
+
+    push    HL
+    pop     IX
+
+    ; fd in BC
+    ld      C, (IX+0)
+    ld      B, (IX+1)
+
+    ; n in DE
+    ld      E, (IX+2)
+    ld      D, (IX+3)
+
+    ; ptr in HL
+    ld      L, (IX+4)
+    ld      H, (IX+5)
+
+    ; fread syscall.
+    ld      A, FREAD
+    rst     48
+
+    ret
+
+    ; void syscall_fclose(int fd)
+_syscall_fclose:
+    ld      HL, 2
+    add     HL, SP
+
+    push    HL
+    pop     IX
+
+    ld      C, (IX+0)
+    ld      B, (IX+1)
+
+    ld      A, FCLOSE
     rst     48
 
     ret
