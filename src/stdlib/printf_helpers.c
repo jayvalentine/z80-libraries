@@ -49,6 +49,12 @@ void printf_unsigned(uint16_t u, uint8_t padding)
 
 void printf_string(char * s, uint8_t padding)
 {
-    for (uint8_t i = 0; i < padding-strlen(s); i++) putchar(' ');
+    size_t len = strlen(s);
+
+    if (padding > len)
+    {
+        for (uint8_t i = 0; i < padding-strlen(s); i++) putchar(' ');
+    }
+    
     puts(s);
 }

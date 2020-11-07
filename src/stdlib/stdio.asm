@@ -90,20 +90,13 @@ __gets_done:
     EXTERN  _printf_string
 
 _printf:
-    push    BC
-    push    AF
-    push    DE
-
-    ; Initially not in "formatting" state.
-    ld      B, 0
-
     ; A holds number of variadic args, apparently?
 
     ; Calculate number of bytes of variadic args.
     ; This is 2*A.
     ld      H, 0
     sla     A ; FIXME: Won't work for more than 127 arguments.
-    add     8 ; Also skip past return value and saved AF/BC.
+    add     2 ; Also skip past return value.
     ld      L, A
 
     ; Add to stack pointer.
@@ -118,7 +111,6 @@ _printf:
 
     ; DE now points to format string,
     ; HL points to first variadic arg.
-
 __printf_loop:
     ; Load character.
     ld      A, (DE)
@@ -130,15 +122,9 @@ __printf_loop:
 
     ; Is it %?
     cp      '%'
-    jp      nz, __printf_putchar
+    jp      nz, __printf_noformat
 
-    ld      B, 1 ; Enter "formatting" state.
-    jp      __printf_loop
-
-__printf_putchar:
-    bit     0, B
-    jp      z, __printf_noformat
-
+__printf_format:
     ; Formatting mode.
     ; Get next argument into BC.
     push    BC
@@ -152,6 +138,8 @@ __printf_putchar:
     ; Get padding in HL.
     call    __printf_get_padding
 
+    ld      A, (DE)
+    inc     DE
     push    DE
 
     ; Type of format?
@@ -205,9 +193,6 @@ __printf_formatdone:
     pop     HL
     pop     BC
 
-    ; No longer in format mode.
-    ld      B, 0
-
     jp      __printf_loop
 
 __printf_noformat:
@@ -222,10 +207,6 @@ __printf_noformat:
 __printf_done:
     ; Some arbitrary return value.
     ld      HL, 1
-
-    pop     DE
-    pop     AF
-    pop     BC
     ret
 
 __printf_get_padding:
