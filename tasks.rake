@@ -26,7 +26,7 @@ LIB_EXCLUDE = ["config", "include", "crt0", ".lib", "tmp"]
 CRT0 = File.join(HERE, 'crt0.asm')
 
 rule ".o" => ".c" do |t|
-    system("zcc +#{CONFIG} -compiler=sccz80 -O2 -c -o #{t.name} #{t.source}")
+    system("zcc +#{CONFIG} -compiler=sccz80 -O2 -I#{File.join(HERE, "include")} --no-crt -c -o #{t.name} #{t.source}")
 end
 
 rule ".o" => ".asm" do |t|
