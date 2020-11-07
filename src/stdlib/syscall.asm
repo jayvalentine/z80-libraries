@@ -89,9 +89,9 @@ _syscall_fopen:
     ; mode in C.
     ld      C, (IX+0)
 
-    ; filename in HL
-    ld      L, (IX+2)
-    ld      H, (IX+3)
+    ; filename in DE
+    ld      E, (IX+2)
+    ld      D, (IX+3)
 
     ; fopen syscall.
     ld      A, FOPEN
