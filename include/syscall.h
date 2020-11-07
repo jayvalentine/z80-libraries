@@ -27,7 +27,8 @@ typedef struct _DiskInfo
 typedef enum
 {
     E_FILENOTFOUND = -1,
-    E_FILELIMIT = -2
+    E_FILELIMIT = -2,
+    E_INVALIDDESCRIPTOR = -3
 } FileError_T;
 
 void syscall_dwrite(char * buf, uint32_t sector);
