@@ -176,14 +176,18 @@ __printf_char:
 __printf_unsigned_decimal:
     push    HL
 
-    ; FIXME: Only handles values <=255 atm.
-    ld      A, C
+    ld      H, B
+    ld      L, C
 
-    ld      C, -100
-    call    __printdigit
-    ld      C, -10
-    call    __printdigit
-    ld      C, -1
+    ld      BC, -10000
+    call    __printdigit_always
+    ld      BC, -1000
+    call    __printdigit_always
+    ld      BC, -100
+    call    __printdigit_always
+    ld      BC, -10
+    call    __printdigit_always
+    ld      BC, -1
     call    __printdigit_always ; Don't want to omit 0 for final digit.
 
     pop     HL
@@ -251,37 +255,44 @@ __printf_done:
     ret
 
 __printdigit:
-    ld      L, '0'-1
+    ld      A, '0'-1
 __printdigit2:
-    inc     L
-    add     A, C
+    inc     A
+    add     HL, BC
     jr      c, __printdigit2
-    sub     C
+
+    sbc     HL, BC
 
     push    AF
-    ld      A, L
+    push    HL
     cp      '0'
     jp      z, __printdigit3
 
     ; Decimal representation now in L.
+    ld      L, A
     zsys(SWRITE)
 
 __printdigit3:
+    pop     HL
     pop     AF
     ret
 
 __printdigit_always:
-    ld      L, '0'-1
+    ld      A, '0'-1
 __printdigit_always2:
-    inc     L
-    add     A, C
+    inc     A
+    add     HL, BC
     jr      c, __printdigit_always2
-    sub     C
+
+    sbc     HL, BC
 
     push    AF
-    ; Decimal representation now in L.
+    push    HL
+    ld      L, A
     zsys(SWRITE)
+    pop     HL
     pop     AF
+
     ret
 
 __printhex:
