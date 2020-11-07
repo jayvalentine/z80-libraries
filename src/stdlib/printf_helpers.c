@@ -17,7 +17,7 @@ uint16_t printf_unsigned_digit(uint16_t u, uint16_t n)
 {
     char c = '0';
 
-    while (u > 0)
+    while (u >= n)
     {
         u -= n;
         c++;
@@ -25,7 +25,7 @@ uint16_t printf_unsigned_digit(uint16_t u, uint16_t n)
 
     putchar(c);
 
-    return u+n;
+    return u;
 }
 
 void printf_unsigned(uint16_t u, uint8_t padding)
@@ -36,7 +36,10 @@ void printf_unsigned(uint16_t u, uint8_t padding)
     if (u >= 1000) strsize++;
     if (u >= 10000) strsize++;
 
-    for (uint8_t i = 0; i < padding-strsize; i++) putchar(' ');
+    if (padding > strsize)
+    {
+        for (uint8_t i = 0; i < padding-strsize; i++) putchar(' ');
+    }
 
     if (strsize == 5) u = printf_unsigned_digit(u, 10000);
     if (strsize >= 4) u = printf_unsigned_digit(u, 1000);
@@ -55,6 +58,6 @@ void printf_string(char * s, uint8_t padding)
     {
         for (uint8_t i = 0; i < padding-strlen(s); i++) putchar(' ');
     }
-    
+
     puts(s);
 }
