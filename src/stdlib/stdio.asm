@@ -84,6 +84,11 @@ __gets_done:
 
     ret
 
+    EXTERN  _printf_char
+    EXTERN  _printf_hex
+    EXTERN  _printf_unsigned
+    EXTERN  _printf_string
+
 _printf:
     push    BC
     push    AF
@@ -142,105 +147,62 @@ __printf_putchar:
     dec     HL
     ld      C, (HL)
 
-    ; FIXME: Padding?
+    push    HL
+
+    ; Get padding in HL.
+    call    __printf_get_padding
+
+    push    DE
 
     ; Type of format?
-    cp      'c'
-    jp      z, __printf_char
-
-    cp      'u'
-    jp      z, __printf_unsigned_decimal
-
-    cp      'x'
-    jp      z, __printf_unsigned_hex_lower
-
-    cp      's'
-    jp      z, __printf_string
-
+    ;
+    ; Put args on stack.
+    push    BC
     push    HL
+
+    cp      'c'
+    jp      nz, __printf_not_char
+
+    call    _printf_char
+    jp      __printf_formatdone
+
+__printf_not_char:
+    cp      'u'
+    jp      nz, __printf_not_unsigned
+
+    call    _printf_unsigned
+    jp      __printf_formatdone
+
+__printf_not_unsigned:
+    cp      'x'
+    jp      nz, __printf_not_hex_lower
+
+    call    _printf_hex
+    jp      __printf_formatdone
+
+__printf_not_hex_lower:
+    cp      's'
+    jp      nz, __printf_unrecognized
+
+    call    _printf_string
+    jp      __printf_formatdone
+
+__printf_unrecognized:
     ld      L, '!'
     zsys(SWRITE)
-    pop     HL
-
-    jp      __printf_formatdone
-
-__printf_char:
-    push    HL
-    
-    ld      L, C
+    ld      L, '!'
+    zsys(SWRITE)
+    ld      L, '!'
     zsys(SWRITE)
 
-    pop     HL
-    jp      __printf_formatdone
-
-__printf_unsigned_decimal:
-    push    HL
-
-    ld      H, B
-    ld      L, C
-
-    ld      A, 1
-    ld      (__padding), A
-
-    ld      BC, -10000
-    call    __getdigit
-    call    __printdigit
-
-    ld      BC, -1000
-    call    __getdigit
-    call    __printdigit
-
-    ld      BC, -100
-    call    __getdigit
-    call    __printdigit
-
-    ld      BC, -10
-    call    __getdigit
-    call    __printdigit
-
-    ld      BC, -1
-    call    __getdigit
-    call    __printdigit
-
-    pop     HL
-    jp      __printf_formatdone
-
-__printf_unsigned_hex_lower:
-    push    HL
-
-    ; Print top digit
-    ; FIXME: Only handles values <=255 atm.
-    ld      A, C
-
-    srl     A
-    srl     A
-    srl     A
-    srl     A
-    call    __printhex
-
-    ; Print lower digit
-    ld      A, C
-    and     A, $0f
-    call    __printhex
-
-    pop     HL
-    jp      __printf_formatdone
-
-__printf_string:
-    push    HL
-    
-    ; Get string pointer into HL and print.
-    push    BC
-    pop     HL
-    
-    push    DE
-    call    _puts
-    pop     DE
-
-    pop     HL
-    jp      __printf_formatdone
-
 __printf_formatdone:
+    ; Discard arguments.
+    pop     BC
+    pop     BC
+
+    ; Restore saved registers.
+    pop     DE
+    pop     HL
     pop     BC
 
     ; No longer in format mode.
@@ -266,63 +228,66 @@ __printf_done:
     pop     BC
     ret
 
-__padding:
-    defs    1
+__printf_get_padding:
+    ld      L, 0
 
-__printdigit:
-    push    HL
+    ld      A, (DE)
 
-    ; If we're not in "padding" mode, always print the digit.
+    ; First character of padding must be 1-9.
+    cp      '1'
+    jp      c, __printf_get_padding_done
+    cp      ':'
+    jp      nc, __printf_get_padding_done
+
+    inc     DE
+
+    ; Convert _character_ 1-9 to _value_ 1-9 and add to our padding value.
+    sub     '0'
+    add     L
     ld      L, A
-    ld      A, (__padding)
-    cp      0
-    jp      z, __printdigit_print
 
-    ; Otherwise, skip the print if the digit is '0'.
-    ld      A, L
+__printf_get_padding_loop:
+    ld      A, (DE)
+
+    ; Loop while character between '0' and '9'
     cp      '0'
-    jp      z, __printdigit_ispadding
+    jp      c, __printf_get_padding_done
+    cp      ':'
+    jp      nc, __printf_get_padding_done
 
-    ; We're in padding mode, but we've hit a non-zero digit.
-    ; Move out of padding mode.
-    ld      A, 0
-    ld      (__padding), A
+    ; It is padding!
+    inc     DE
 
-__printdigit_print:
-    zsys(SWRITE)
+    ; Multiply L by 10.
+    call    __l_times_10
 
-__printdigit_ispadding:
-    pop     HL
-    ret
-
-    ; Calculates the nth digit in decimal of the value in HL.
-    ; BC is -10^(n-1).
-__getdigit:
-    ld      A, '0'-1
-__getdigit2:
-    inc     A
-    add     HL, BC
-    jr      c, __getdigit2
-
-    sbc     HL, BC
-
-    ret
-
-__printhex:
-    ; 0-9?
-    cp      10
-    jp      nc, __printhex_af
-
-    add     A, '0'
+    ; Convert _character_ 1-9 to _value_ 1-9 and add to our padding value.
+    sub     '0'
+    add     L
     ld      L, A
-    zsys(SWRITE)
+
+    ; Loop.
+    jp      __printf_get_padding_loop
+
+__printf_get_padding_done:
     ret
 
-__printhex_af:
-    sub     A, 10 ; Map 10-15 to 0-5 range.
-    add     A, 'a'
+__l_times_10:
+    ld      H, A
+    ld      A, L
+
+    ; Multiply by 8.
+    sla     A
+    sla     A
+    sla     A
+
+    ; Add 2*L
+    add     A, L
+    add     A, L
+
     ld      L, A
-    zsys(SWRITE)
+    ld      A, H
+    ld      H, 0
     ret
 
 __newline:
