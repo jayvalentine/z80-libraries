@@ -179,16 +179,28 @@ __printf_unsigned_decimal:
     ld      H, B
     ld      L, C
 
+    ld      A, 1
+    ld      (__padding), A
+
     ld      BC, -10000
-    call    __printdigit_always
+    call    __getdigit
+    call    __printdigit
+
     ld      BC, -1000
-    call    __printdigit_always
+    call    __getdigit
+    call    __printdigit
+
     ld      BC, -100
-    call    __printdigit_always
+    call    __getdigit
+    call    __printdigit
+
     ld      BC, -10
-    call    __printdigit_always
+    call    __getdigit
+    call    __printdigit
+
     ld      BC, -1
-    call    __printdigit_always ; Don't want to omit 0 for final digit.
+    call    __getdigit
+    call    __printdigit
 
     pop     HL
     jp      __printf_formatdone
@@ -254,44 +266,45 @@ __printf_done:
     pop     BC
     ret
 
+__padding:
+    defs    1
+
 __printdigit:
-    ld      A, '0'-1
-__printdigit2:
-    inc     A
-    add     HL, BC
-    jr      c, __printdigit2
-
-    sbc     HL, BC
-
-    push    AF
     push    HL
-    cp      '0'
-    jp      z, __printdigit3
 
-    ; Decimal representation now in L.
+    ; If we're not in "padding" mode, always print the digit.
     ld      L, A
+    ld      A, (__padding)
+    cp      0
+    jp      z, __printdigit_print
+
+    ; Otherwise, skip the print if the digit is '0'.
+    ld      A, L
+    cp      '0'
+    jp      z, __printdigit_ispadding
+
+    ; We're in padding mode, but we've hit a non-zero digit.
+    ; Move out of padding mode.
+    ld      A, 0
+    ld      (__padding), A
+
+__printdigit_print:
     zsys(SWRITE)
 
-__printdigit3:
+__printdigit_ispadding:
     pop     HL
-    pop     AF
     ret
 
-__printdigit_always:
+    ; Calculates the nth digit in decimal of the value in HL.
+    ; BC is -10^(n-1).
+__getdigit:
     ld      A, '0'-1
-__printdigit_always2:
+__getdigit2:
     inc     A
     add     HL, BC
-    jr      c, __printdigit_always2
+    jr      c, __getdigit2
 
     sbc     HL, BC
-
-    push    AF
-    push    HL
-    ld      L, A
-    zsys(SWRITE)
-    pop     HL
-    pop     AF
 
     ret
 
