@@ -57,7 +57,7 @@ void syscall_fclose(int fd);
 
 int syscall_finfo(const char * filename, FINFO * finfo);
 
-int syscall_fentries(void);
-int syscall_fentry(char * s, int entry);
+uint16_t syscall_fentries(void);
+int syscall_fentry(char * s, uint16_t entry);
 
 #endif /* _SYSCALL_H */
