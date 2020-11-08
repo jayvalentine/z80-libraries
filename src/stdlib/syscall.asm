@@ -7,6 +7,8 @@
     PUBLIC  _syscall_fclose
     PUBLIC  _syscall_dinfo
     PUBLIC  _syscall_finfo
+    PUBLIC  _syscall_fentries
+    PUBLIC  _syscall_fentry
 
     defc    DWRITE = 4
     defc    DREAD = 6
@@ -18,6 +20,8 @@
 
     defc    DINFO = 16
     defc    FINFO = 18
+    defc    FENTRIES = 20
+    defc    FENTRY = 22
 
     ; void syscall_dwrite(char * buf, uint32_t sector)
 _syscall_dwrite:
@@ -160,4 +164,28 @@ _syscall_finfo:
     ld      A, FINFO
     rst     48
 
+    ret
+
+    ; int syscall_fentries(void)
+_syscall_fentries:
+    ld      A, FENTRIES
+    rst     48
+    ret
+
+    ; int syscall_fentry(char * s, int entry)
+_syscall_fentry:
+    ld      HL, 2
+    add     HL, SP
+
+    push    HL
+    pop     IX
+
+    ld      C, (IX+0)
+    ld      B, (IX+1)
+    ld      E, (IX+2)
+    ld      D, (IX+3)
+
+    ld      A, FENTRY
+    rst     48
+    
     ret
