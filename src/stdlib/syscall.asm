@@ -6,6 +6,7 @@
     PUBLIC  _syscall_fread
     PUBLIC  _syscall_fclose
     PUBLIC  _syscall_dinfo
+    PUBLIC  _syscall_finfo
 
     defc    DWRITE = 4
     defc    DREAD = 6
@@ -16,6 +17,7 @@
     defc    FCLOSE = 14
 
     defc    DINFO = 16
+    defc    FINFO = 18
 
     ; void syscall_dwrite(char * buf, uint32_t sector)
 _syscall_dwrite:
@@ -138,6 +140,24 @@ _syscall_fclose:
     ld      B, (IX+1)
 
     ld      A, FCLOSE
+    rst     48
+
+    ret
+
+    ; int syscall_finfo(const char * filename, FINFO * finfo)
+_syscall_finfo:
+    ld      HL, 2
+    add     HL, SP
+
+    push    HL
+    pop     IX
+
+    ld      C, (IX+0)
+    ld      B, (IX+1)
+    ld      E, (IX+2)
+    ld      D, (IX+3)
+
+    ld      A, FINFO
     rst     48
 
     ret

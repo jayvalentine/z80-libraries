@@ -9,6 +9,10 @@
 
 #define FMODE_READ 0x01
 
+#define FATTR_SYS 0b00000100
+#define FATTR_HID 0b00000010
+#define FATTR_RO  0b00000001
+
 /* Information about the disk. Needed for filesystem interaction. */
 typedef struct _DiskInfo
 {
@@ -24,6 +28,18 @@ typedef struct _DiskInfo
     uint32_t num_sectors;
 } DiskInfo_T;
 
+/* Information about a particular file. */
+typedef struct _FINFO
+{
+    uint8_t attr;
+
+    uint32_t size;
+
+    uint16_t created_year;
+    uint8_t created_month;
+    uint8_t created_day;
+} FINFO;
+
 typedef enum
 {
     E_FILENOTFOUND = -1,
@@ -38,5 +54,7 @@ const DiskInfo_T * syscall_dinfo(void);
 int syscall_fopen(const char * filename, uint8_t mode);
 size_t syscall_fread(char * ptr, size_t n, int fd);
 void syscall_fclose(int fd);
+
+int syscall_finfo(const char * filename, FINFO * finfo);
 
 #endif /* _SYSCALL_H */
