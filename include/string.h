@@ -10,6 +10,7 @@ int strcmp(const char *s1, const char *s2);
 size_t strlen(const char * s) __z88dk_fastcall;
 char * strtok(char * s1, const char * s2);
 char * strchr(const char * s, int c);
+char * strcpy(char * s1, const char * s2);
 
 void * memcpy(char * dst, const char * src, size_t n);
 void * memset(void * s, int c, size_t n);
