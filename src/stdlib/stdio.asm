@@ -67,11 +67,46 @@ __gets_loop:
     cp      $0d
     jp      z, __gets_done
 
-    ; Not newline, so load into buffer.
+    ; Is it a backspace?
+    cp      $7f
+    jp      z, __gets_backspace
+    cp      $08
+    jp      z, __gets_backspace
+
+    ; Not newline or backspace, so load into buffer.
     ld      (DE), A
     inc     DE
+
+    push    HL
     ld      L, A
     call    _putchar
+    pop     HL
+
+    jp      __gets_loop
+
+__gets_backspace:
+    ; Skip if we're already at the start of the buffer.
+    ld      A, H
+    cp      D
+    jp      nz, __gets_backspace_send
+    ld      A, L
+    cp      E
+    jp      nz, __gets_backspace_send
+
+    jp      __gets_loop
+
+__gets_backspace_send:
+    ; Delete previous character from screen.
+    push    HL
+    push    DE
+    ld      HL, __backspace_str
+    call    _puts
+    pop     DE
+    pop     HL
+
+    ; Decrement pointer.
+    dec     DE
+
     jp      __gets_loop
 
 __gets_done:
@@ -83,6 +118,13 @@ __gets_done:
     call    _puts
 
     ret
+
+    ; Implements a backspace.
+    ; Moves cursor back to previous character, emits a space to erase it,
+    ; then moves cursor back again.
+__backspace_str:
+    defm    "\033[D \033[D"
+    defb    0
 
     EXTERN  _printf_char
     EXTERN  _printf_hex
