@@ -6,13 +6,46 @@ extern char padding_char;
 
 void printf_char(int16_t c, uint8_t padding)
 {
-    for (uint8_t i = 0; i < padding-1; i++) putchar(' ');
+    if (padding != 0)
+    {
+        for (uint8_t i = 0; i < padding-1; i++) putchar(' ');
+    }
+
+    putchar(c);
+}
+
+char printf_hex_digit(uint8_t d)
+{
+    char c;
+
+    /* Invalid hex digit - must be 0-15. */
+    if (d > 15) c = '!';
+
+    /* 0-9. */
+    else if (d < 10) c = d+'0';
+
+    /* a-f. */
+    else c = (d - 10) + 'a';
+
     putchar(c);
 }
 
 void printf_hex(uint16_t h, uint8_t padding)
 {
-    
+    uint8_t strsize = 1;
+    if (h > 0x000f) strsize++;
+    if (h > 0x00ff) strsize++;
+    if (h > 0x0fff) strsize++;
+
+    if (padding > strsize)
+    {
+        for (uint8_t i = 0; i < padding-strsize; i++) putchar(padding_char);
+    }
+
+    if (strsize == 4) printf_hex_digit((h >> 12) & 0x0f);
+    if (strsize >= 3) printf_hex_digit((h >> 8) & 0x0f);
+    if (strsize >= 2) printf_hex_digit((h >> 4) & 0x0f);
+    printf_hex_digit(h & 0x0f);
 }
 
 uint16_t printf_unsigned_digit(uint16_t u, uint16_t n)
