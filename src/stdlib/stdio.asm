@@ -135,6 +135,20 @@ __printf_format:
 
     push    HL
 
+    ld      A, ' '
+    ld      (_padding_char), A
+
+    ; Any flags?
+    ; So far we just handle zero-padding.
+    ld      A, (DE)
+
+    cp      '0'
+    jp      nz, __printf_flags_done
+
+    ld      (_padding_char), A
+    inc     DE
+
+__printf_flags_done:
     ; Get padding in HL.
     call    __printf_get_padding
 
@@ -270,6 +284,10 @@ __l_times_10:
     ld      A, H
     ld      H, 0
     ret
+
+    PUBLIC  _padding_char
+_padding_char:
+    defs    1
 
 __newline:
     defm    "\n\r"

@@ -2,6 +2,8 @@
 #include <stdint.h>
 #include <string.h>
 
+extern char padding_char;
+
 void printf_char(int16_t c, uint8_t padding)
 {
     for (uint8_t i = 0; i < padding-1; i++) putchar(' ');
@@ -10,7 +12,7 @@ void printf_char(int16_t c, uint8_t padding)
 
 void printf_hex(uint16_t h, uint8_t padding)
 {
-
+    
 }
 
 uint16_t printf_unsigned_digit(uint16_t u, uint16_t n)
@@ -38,7 +40,7 @@ void printf_unsigned(uint16_t u, uint8_t padding)
 
     if (padding > strsize)
     {
-        for (uint8_t i = 0; i < padding-strsize; i++) putchar(' ');
+        for (uint8_t i = 0; i < padding-strsize; i++) putchar(padding_char);
     }
 
     if (strsize == 5) u = printf_unsigned_digit(u, 10000);
