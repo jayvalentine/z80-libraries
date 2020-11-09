@@ -1,4 +1,5 @@
     PUBLIC  __setjmp
+    PUBLIC  __longjmp
 
     ; int _setjmp(jmp_buf * env)
     ; Internal setjmp implementation
@@ -42,6 +43,51 @@ __setjmp:
     ld      HL, 0
     ret
 
+    ; void _longjmp(jmp_env * env, int value)
+    ; Internal implementation of longjmp.
+__longjmp:
+    ld      HL, 2
+    add     HL, SP
+    push    HL
+    pop     IX
+    
+    ld      L, (IX+0)
+    ld      H, (IX+1)
+
+    ld      (__longjmp_tmp_value), HL
+
+    ld      L, (IX+2)
+    ld      H, (IX+3)
+
+    ld      (__longjmp_tmp_env), HL
+
+    ; Copy provided buffer into the temporary one.
+    ld      DE, __setjmp_env_tmp
+    ld      BC, 14
+    ldir
+
+    ld      SP, __setjmp_env_tmp
+    
+    ; Return address into HL.
+    pop     HL
+
+    ; Restore registers
+    pop     AF
+    pop     BC
+    pop     DE
+    pop     IX
+    pop     IY
+
+    ; Restore stack pointer of setjmp caller, overwrite return address.
+    ld      SP, (__setjmp_env_tmp_sp)
+    ex      (SP), HL
+
+    ; Get return value into HL.
+    ld      HL, (__longjmp_tmp_value)
+
+    ; Return. This should be to the caller of setjmp.
+    ret
+
 __setjmp_env_tmp:
 __setjmp_env_tmp_address:
     defs    2
@@ -59,4 +105,10 @@ __setjmp_env_tmp_iy:
     defs    2
 
 __setjmp_env_tmp_sp:
+    defs    2
+
+__longjmp_tmp_env:
+    defs    2
+
+__longjmp_tmp_value:
     defs    2

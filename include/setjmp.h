@@ -19,7 +19,9 @@ typedef struct _SETJMP_ENV
 } jmp_buf;
 
 int _setjmp(jmp_buf * env);
+void _longjmp(jmp_buf * env, int value);
 
 #define setjmp(env) _setjmp(&env)
+#define longjmp(env, value) _longjmp(&env, value)
 
 #endif /* _SETJMP_H */
