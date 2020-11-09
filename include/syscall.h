@@ -66,4 +66,6 @@ int syscall_fentry(char * s, uint16_t entry);
 
 int syscall_pexec(char ** argv, size_t argc);
 
+void syscall_sighandle(SIGHANDLER_T handle, int sig);
+
 #endif /* _SYSCALL_H */

@@ -10,6 +10,7 @@
     PUBLIC  _syscall_fentries
     PUBLIC  _syscall_fentry
     PUBLIC  _syscall_pexec
+    PUBLIC  _syscall_sighandle
 
     defc    DWRITE = 4
     defc    DREAD = 6
@@ -25,6 +26,8 @@
     defc    FENTRY = 22
 
     defc    PEXEC = 24
+
+    defc    SIGHANDLE = 26
 
     ; void syscall_dwrite(char * buf, uint32_t sector)
 _syscall_dwrite:
@@ -209,4 +212,22 @@ _syscall_pexec:
     ld      A, PEXEC
     rst     48
     
+    ret
+
+    ; void syscall_sighandle(SIGHANDLE_T handle, int sig)
+_syscall_sighandle:
+    ld      HL, 2
+    add     HL, SP
+
+    push    HL
+    pop     IX
+
+    ld      C, (IX+0)
+    ld      B, (IX+1)
+    ld      E, (IX+2)
+    ld      D, (IX+3)
+
+    ld      A, SIGHANDLE
+    rst     48
+
     ret
