@@ -61,4 +61,6 @@ int syscall_finfo(const char * filename, FINFO * finfo);
 uint16_t syscall_fentries(void);
 int syscall_fentry(char * s, uint16_t entry);
 
+int syscall_pexec(char ** argv, size_t argc);
+
 #endif /* _SYSCALL_H */

@@ -9,6 +9,7 @@
     PUBLIC  _syscall_finfo
     PUBLIC  _syscall_fentries
     PUBLIC  _syscall_fentry
+    PUBLIC  _syscall_pexec
 
     defc    DWRITE = 4
     defc    DREAD = 6
@@ -22,6 +23,8 @@
     defc    FINFO = 18
     defc    FENTRIES = 20
     defc    FENTRY = 22
+
+    defc    PEXEC = 24
 
     ; void syscall_dwrite(char * buf, uint32_t sector)
 _syscall_dwrite:
@@ -186,6 +189,24 @@ _syscall_fentry:
     ld      D, (IX+3)
 
     ld      A, FENTRY
+    rst     48
+    
+    ret
+
+    ; int syscall_pexec(char ** argv, size_t argc)
+_syscall_pexec:
+    ld      HL, 2
+    add     HL, SP
+
+    push    HL
+    pop     IX
+
+    ld      C, (IX+0)
+    ld      B, (IX+1)
+    ld      E, (IX+2)
+    ld      D, (IX+3)
+
+    ld      A, PEXEC
     rst     48
     
     ret
