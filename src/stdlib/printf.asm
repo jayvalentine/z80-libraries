@@ -1,9 +1,3 @@
-    ; Implementation of stdio portion of standard library.
-
-    PUBLIC  _puts
-    PUBLIC  _gets
-    PUBLIC  _putchar
-    PUBLIC  _getchar
     PUBLIC  _printf
 
     ; Syscall macro.
@@ -13,123 +7,11 @@ define(zsys, `ld      A, $1 << 1
     defc    SWRITE = 0
     defc    SREAD  = 1
 
-_puts:
-    push    HL
-    pop     DE
-
-__puts_loop:
-    ; src in DE.
-    ld      A, (DE)
-    inc     DE
-    cp      0
-    jp      z, __puts_done
-
-    ; Not null, print to serial port.
-    ld      L, A
-    zsys(SWRITE)
-
-    ; Loop.
-    jp      __puts_loop
-
-__puts_done:
-    ; Successful, return 0.
-    ld      HL, 0
-    ret
-
-_putchar:
-    push    AF
-
-    ; Character to send is in HL.
-    ; Because it's a character, we can ignore H.
-    zsys(SWRITE)
-    
-    pop     AF
-    ret
-
-_getchar:
-    push    AF
-    zsys(SREAD)
-    ld      H, 0
-    ld      L, A
-    pop     AF
-    ret
-
-_gets:
-    push    HL
-    pop     DE
-
-__gets_loop:
-    ; Get a char from serial port and test
-    ; to see if it's a newline.
-    zsys(SREAD)
-    cp      $0a
-    jp      z, __gets_done
-    cp      $0d
-    jp      z, __gets_done
-
-    ; Is it a backspace?
-    cp      $7f
-    jp      z, __gets_backspace
-    cp      $08
-    jp      z, __gets_backspace
-
-    ; Not newline or backspace, so load into buffer.
-    ld      (DE), A
-    inc     DE
-
-    push    HL
-    ld      L, A
-    call    _putchar
-    pop     HL
-
-    jp      __gets_loop
-
-__gets_backspace:
-    ; Skip if we're already at the start of the buffer.
-    ld      A, H
-    cp      D
-    jp      nz, __gets_backspace_send
-    ld      A, L
-    cp      E
-    jp      nz, __gets_backspace_send
-
-    jp      __gets_loop
-
-__gets_backspace_send:
-    ; Delete previous character from screen.
-    push    HL
-    push    DE
-    ld      HL, __backspace_str
-    call    _puts
-    pop     DE
-    pop     HL
-
-    ; Decrement pointer.
-    dec     DE
-
-    jp      __gets_loop
-
-__gets_done:
-    ; Terminating null character.
-    ld      A, 0
-    ld      (DE), A
-
-    ld      HL, __newline
-    call    _puts
-
-    ret
-
-    ; Implements a backspace.
-    ; Moves cursor back to previous character, emits a space to erase it,
-    ; then moves cursor back again.
-__backspace_str:
-    defm    "\033[D \033[D"
-    defb    0
-
     EXTERN  _printf_char
     EXTERN  _printf_hex
     EXTERN  _printf_unsigned
     EXTERN  _printf_string
+    EXTERN  _puts
 
 _printf:
     ; A holds number of variadic args, apparently?
@@ -330,7 +212,3 @@ __l_times_10:
     PUBLIC  _padding_char
 _padding_char:
     defs    1
-
-__newline:
-    defm    "\n\r"
-    defb    0
