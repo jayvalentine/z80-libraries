@@ -48,6 +48,9 @@ typedef enum
     E_INVALIDFILENAME = -4
 } FileError_T;
 
+/* Signal handler function pointer type. */
+typedef void (*SIGHANDLER_T)(uint16_t);
+
 void syscall_dwrite(char * buf, uint32_t sector);
 void syscall_dread(char * buf, uint32_t sector);
 const DiskInfo_T * syscall_dinfo(void);
