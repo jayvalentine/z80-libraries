@@ -56,8 +56,11 @@ namespace 'lib' do
         
         desc "Build library '#{lib}'"
         task lib => (["prebuild_#{lib}"] + dependencies.ext('.o')) do
-            # Delete temporary files.
-            FileUtils.rm_r(File.join(HERE, "src", lib, "tmp"))
+            # Delete temporary files (if they exist).
+            if Dir.exist? File.join(HERE, "src", lib, "tmp")
+                FileUtils.rm_r(File.join(HERE, "src", lib, "tmp"))
+            end
+
             system("z80asm -x#{File.join(HERE, lib)}.lib #{dependencies.ext('.o').to_a.join(" ")}")
         end
 
