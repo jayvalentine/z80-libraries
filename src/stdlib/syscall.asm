@@ -138,6 +138,33 @@ _syscall_fread:
 
     ret
 
+    ; size_t syscall_fwrite(char * ptr, size_t n, int fd)
+_syscall_fwrite:
+    ; Get parameters
+    ld      HL, 2
+    add     HL, SP
+
+    push    HL
+    pop     IX
+
+    ; fd in BC
+    ld      C, (IX+0)
+    ld      B, (IX+1)
+
+    ; n in DE
+    ld      E, (IX+2)
+    ld      D, (IX+3)
+
+    ; ptr in HL
+    ld      L, (IX+4)
+    ld      H, (IX+5)
+
+    ; fwrite syscall.
+    ld      A, FWRITE
+    rst     48
+
+    ret
+
     ; void syscall_fclose(int fd)
 _syscall_fclose:
     ld      HL, 2

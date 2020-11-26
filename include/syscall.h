@@ -8,6 +8,7 @@
 #include <stddef.h>
 
 #define FMODE_READ 0x01
+#define FMODE_WRITE 0x02
 
 #define FATTR_SYS 0b00000100
 #define FATTR_HID 0b00000010
@@ -45,7 +46,9 @@ typedef enum
     E_FILENOTFOUND = -1,
     E_FILELIMIT = -2,
     E_INVALIDDESCRIPTOR = -3,
-    E_INVALIDFILENAME = -4
+    E_INVALIDFILENAME = -4,
+    E_ACCESSMODE = -5,
+    E_DISKFULL = -6
 } FileError_T;
 
 typedef enum
@@ -63,6 +66,7 @@ const DiskInfo_T * syscall_dinfo(void);
 
 int syscall_fopen(const char * filename, uint8_t mode);
 size_t syscall_fread(char * ptr, size_t n, int fd);
+size_t syscall_fwrite(char * ptr, size_t n, int fd);
 void syscall_fclose(int fd);
 
 int syscall_finfo(const char * filename, FINFO * finfo);
