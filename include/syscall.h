@@ -48,7 +48,8 @@ typedef enum
     E_INVALIDDESCRIPTOR = -3,
     E_INVALIDFILENAME = -4,
     E_ACCESSMODE = -5,
-    E_DISKFULL = -6
+    E_DISKFULL = -6,
+    E_FILEEXIST = -7
 } FileError_T;
 
 typedef enum
