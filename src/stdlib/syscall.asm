@@ -4,6 +4,7 @@
     PUBLIC  _syscall_dread
     PUBLIC  _syscall_fopen
     PUBLIC  _syscall_fread
+    PUBLIC  _syscall_fwrite
     PUBLIC  _syscall_fclose
     PUBLIC  _syscall_dinfo
     PUBLIC  _syscall_finfo
