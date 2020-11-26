@@ -48,6 +48,12 @@ typedef enum
     E_INVALIDFILENAME = -4
 } FileError_T;
 
+typedef enum
+{
+    SIG_CANCEL = 0,
+    SIG_BREAK = 1
+} Signal_T;
+
 /* Signal handler function pointer type. */
 typedef void (*SIGHANDLER_T)(uint16_t);
 
@@ -66,6 +72,6 @@ int syscall_fentry(char * s, uint16_t entry);
 
 int syscall_pexec(char ** argv, size_t argc);
 
-void syscall_sighandle(SIGHANDLER_T handle, int sig);
+void syscall_sighandle(SIGHANDLER_T handle, Signal_T sig);
 
 #endif /* _SYSCALL_H */
