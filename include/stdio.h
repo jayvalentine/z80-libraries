@@ -25,11 +25,19 @@ typedef struct _IO_FILE
 
 // puts
 // Prints a string to standard output (serial port).
+#ifdef Z88DK
 int     puts(const char *s) __z88dk_fastcall;
+#else
+int     puts(const char *s);
+#endif
 
 // putchar
 // Prints a character to standard output (serial port).
+#ifdef Z88DK
 char     putchar(char c) __z88dk_fastcall;
+#else
+char     putchar(char c);
+#endif
 
 // getchar
 // Returns a character from standard input (serial port).
@@ -37,7 +45,11 @@ char     getchar(void);
 
 // gets
 // Gets a newline-terminated string of input from standard input (serial port).
+#ifdef Z88DK
 char *   gets(char *s) __z88dk_fastcall;
+#else
+char *   gets(char *s);
+#endif
 
 // printf
 // Prints a formatted string to standard output.
