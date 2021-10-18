@@ -12,6 +12,8 @@
     PUBLIC  _syscall_fentry
     PUBLIC  _syscall_pexec
     PUBLIC  _syscall_sighandle
+    PUBLIC  _syscall_fdelete
+    PUBLIC  _syscall_pload
 
     defc    DWRITE = 4
     defc    DREAD = 6
@@ -29,6 +31,10 @@
     defc    PEXEC = 24
 
     defc    SIGHANDLE = 26
+
+    defc    FDELETE = 28
+
+    defc    PLOAD = 30
 
     ; void syscall_dwrite(char * buf, uint32_t sector)
 _syscall_dwrite:
@@ -256,6 +262,38 @@ _syscall_sighandle:
     ld      D, (IX+3)
 
     ld      A, SIGHANDLE
+    rst     48
+
+    ret
+
+    ; void syscall_fdelete(const char * filename)
+_syscall_fdelete:
+    ld      HL, 2
+    add     HL, SP
+
+    push    HL
+    pop     IX
+
+    ld      C, (IX+0)
+    ld      B, (IX+1)
+
+    ld      A, FDELETE
+    rst     48
+
+    ret
+
+    ; void syscall_pload(const char * filename)
+_syscall_pload:
+    ld      HL, 2
+    add     HL, SP
+
+    push    HL
+    pop     IX
+
+    ld      C, (IX+0)
+    ld      B, (IX+1)
+
+    ld      A, PLOAD
     rst     48
 
     ret

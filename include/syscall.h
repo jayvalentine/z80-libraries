@@ -71,6 +71,7 @@ int syscall_fopen(const char * filename, uint8_t mode);
 size_t syscall_fread(char * ptr, size_t n, int fd);
 size_t syscall_fwrite(char * ptr, size_t n, int fd);
 void syscall_fclose(int fd);
+int syscall_fdelete(const char * filename);
 
 int syscall_finfo(const char * filename, FINFO * finfo);
 
@@ -78,6 +79,7 @@ uint16_t syscall_fentries(void);
 int syscall_fentry(char * s, uint16_t entry);
 
 int syscall_pexec(char ** argv, size_t argc);
+int syscall_pload(const char * filename);
 
 void syscall_sighandle(SIGHANDLER_T handle, Signal_T sig);
 
