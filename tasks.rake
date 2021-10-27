@@ -13,17 +13,7 @@
 # task 'build' => 'lib:stdlib' do ...
 #
 
-CLK_SPEED_HZ = 3_686_400
-
-HERE = __dir__
-CONFIG = File.expand_path(File.join(HERE, 'config/modularz80.cfg'))
-
-LIB_INCLUDE = File.join(HERE, 'include')
-LIB = HERE
-
-LIB_EXCLUDE = ["config", "include", "crt0", ".lib", "tmp"]
-
-CRT0 = File.join(HERE, 'crt0.asm')
+require_relative 'vars.rb'
 
 rule ".o" => ".c" do |t|
     system("zcc +#{CONFIG} -compiler=sccz80 -O2 -I#{File.join(HERE, "include")} --no-crt -c -o #{t.name} #{t.source}")
