@@ -230,7 +230,7 @@ _syscall_fentry:
     
     ret
 
-    ; int syscall_pexec(char ** argv, size_t argc)
+    ; int syscall_pexec(unit16_t addr, char ** argv, size_t argc)
 _syscall_pexec:
     ld      HL, 2
     add     HL, SP
@@ -242,6 +242,8 @@ _syscall_pexec:
     ld      B, (IX+1)
     ld      E, (IX+2)
     ld      D, (IX+3)
+    ld      L, (IX+4)
+    ld      H, (IX+5)
 
     ld      A, PEXEC
     rst     48

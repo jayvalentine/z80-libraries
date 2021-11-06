@@ -80,7 +80,7 @@ int syscall_finfo(const char * filename, FINFO * finfo);
 uint16_t syscall_fentries(void);
 int syscall_fentry(char * s, uint16_t entry);
 
-int syscall_pexec(char ** argv, size_t argc);
+int syscall_pexec(uint16_t addr, char ** argv, size_t argc);
 int syscall_pload(const char * filename);
 
 void syscall_sighandle(SIGHANDLER_T handle, Signal_T sig);
