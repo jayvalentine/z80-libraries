@@ -51,7 +51,9 @@ typedef enum
     E_DISKFULL = -6,
     E_FILEEXIST = -7,
     E_DIRFULL = -8,
-    E_INVALIDMODE = -9
+    E_INVALIDMODE = -9,
+    E_INVALIDPAGE = -10,
+    E_INVALIDHEADER = -11
 } FileError_T;
 
 typedef enum
