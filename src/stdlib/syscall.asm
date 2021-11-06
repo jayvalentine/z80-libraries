@@ -284,7 +284,7 @@ _syscall_fdelete:
 
     ret
 
-    ; void syscall_pload(const char * filename)
+    ; void syscall_pload(uint16_t * address, const char * filename)
 _syscall_pload:
     ld      HL, 2
     add     HL, SP
@@ -294,6 +294,8 @@ _syscall_pload:
 
     ld      C, (IX+0)
     ld      B, (IX+1)
+    ld      E, (IX+2)
+    ld      D, (IX+3)
 
     ld      A, PLOAD
     rst     48
