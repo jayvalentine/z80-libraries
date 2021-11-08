@@ -7,6 +7,8 @@
 #include <stdint.h>
 #include <stddef.h>
 
+#define SMODE_BINARY 0x01
+
 #define FMODE_READ 0x01
 #define FMODE_WRITE 0x02
 
@@ -64,6 +66,8 @@ typedef enum
 
 /* Signal handler function pointer type. */
 typedef void (*SIGHANDLER_T)(uint16_t);
+
+void syscall_smode(uint8_t mode);
 
 void syscall_dwrite(char * buf, uint32_t sector);
 void syscall_dread(char * buf, uint32_t sector);

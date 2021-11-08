@@ -14,6 +14,7 @@
     PUBLIC  _syscall_sighandle
     PUBLIC  _syscall_fdelete
     PUBLIC  _syscall_pload
+    PUBLIC  _syscall_smode
 
     defc    DWRITE = 4
     defc    DREAD = 6
@@ -35,6 +36,22 @@
     defc    FDELETE = 28
 
     defc    PLOAD = 30
+
+    defc    SMODE = 32
+
+    ; void syscall_smode(uint8_t mode)
+_syscall_smode:
+    ; Get parameters.
+    ld      HL, 2
+    add     HL, SP
+
+    ; Mode in C.
+    ld      C, (HL)
+
+    ld      A, SMODE
+    rst     48
+
+    ret
 
     ; void syscall_dwrite(char * buf, uint32_t sector)
 _syscall_dwrite:
