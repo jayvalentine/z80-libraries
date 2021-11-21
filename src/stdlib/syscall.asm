@@ -15,6 +15,7 @@
     PUBLIC  _syscall_fdelete
     PUBLIC  _syscall_pload
     PUBLIC  _syscall_smode
+    PUBLIC  _syscall_version
 
     defc    DWRITE = 4
     defc    DREAD = 6
@@ -38,6 +39,8 @@
     defc    PLOAD = 30
 
     defc    SMODE = 32
+
+    defc    VERSION = 34
 
     ; void syscall_smode(uint8_t mode)
 _syscall_smode:
@@ -315,6 +318,13 @@ _syscall_pload:
     ld      D, (IX+3)
 
     ld      A, PLOAD
+    rst     48
+
+    ret
+
+    ; const char * syscall_version(void)
+_syscall_version:
+    ld      A, VERSION
     rst     48
 
     ret
