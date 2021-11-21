@@ -10,4 +10,8 @@ typedef unsigned int uint16_t;
 typedef signed long int32_t;
 typedef unsigned long uint32_t;
 
+/* Pointer types. */
+typedef int16_t intptr_t;
+typedef uint16_t uintptr_t;
+
 #endif /* _STDINT_H */
