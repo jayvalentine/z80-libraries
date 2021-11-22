@@ -10,6 +10,7 @@ define(zsys, `ld      A, $1 << 1
     EXTERN  _printf_char
     EXTERN  _printf_hex
     EXTERN  _printf_unsigned
+    EXTERN  _printf_signed
     EXTERN  _printf_string
     EXTERN  _puts
 
@@ -100,6 +101,13 @@ __printf_not_char:
     jp      __printf_formatdone
 
 __printf_not_unsigned:
+    cp      'd'
+    jp      nz, __printf_not_signed
+
+    call    _printf_signed
+    jp      __printf_formatdone
+
+__printf_not_signed:
     cp      'x'
     jp      nz, __printf_not_hex_lower
 

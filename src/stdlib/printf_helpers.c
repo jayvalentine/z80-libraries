@@ -63,13 +63,20 @@ uint16_t printf_unsigned_digit(uint16_t u, uint16_t n)
     return u;
 }
 
-void printf_unsigned(uint16_t u, uint8_t padding)
+uint8_t uint_strsize(uint16_t u)
 {
     uint8_t strsize = 1;
     if (u >= 10) strsize++;
     if (u >= 100) strsize++;
     if (u >= 1000) strsize++;
     if (u >= 10000) strsize++;
+
+    return strsize;
+}
+
+void printf_unsigned(uint16_t u, uint8_t padding)
+{
+    uint8_t strsize = uint_strsize(u);
 
     if (padding > strsize)
     {
@@ -84,6 +91,24 @@ void printf_unsigned(uint16_t u, uint8_t padding)
     /* u now < 10. Just add 0! */
     putchar(u + '0');
 }
+
+void printf_signed(int16_t d, uint8_t padding)
+{
+    uint16_t abs;
+    if (d < 0) abs = -d;
+    else abs = d;
+
+    uint8_t strsize = uint_strsize(abs) + 1;
+
+    if (padding > strsize)
+    {
+        for (uint8_t i = 0; i < padding-strsize; i++) putchar(padding_char);
+    }
+
+    if (d < 0) putchar('-');
+    printf_unsigned(abs, 0);
+}
+
 
 void printf_string(char * s, uint8_t padding)
 {
