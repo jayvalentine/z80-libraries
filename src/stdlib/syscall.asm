@@ -15,7 +15,7 @@
     PUBLIC  _syscall_fdelete
     PUBLIC  _syscall_pload
     PUBLIC  _syscall_smode
-    PUBLIC  _syscall_version
+    PUBLIC  _syscall_sysinfo
 
     defc    DWRITE = 4
     defc    DREAD = 6
@@ -40,7 +40,7 @@
 
     defc    SMODE = 32
 
-    defc    VERSION = 34
+    defc    SYSINFO = 34
 
     ; void syscall_smode(uint8_t mode)
 _syscall_smode:
@@ -322,9 +322,9 @@ _syscall_pload:
 
     ret
 
-    ; const char * syscall_version(void)
-_syscall_version:
-    ld      A, VERSION
+    ; const SysInfo_T * syscall_sysinfo(void)
+_syscall_sysinfo:
+    ld      A, SYSINFO
     rst     48
 
     ret

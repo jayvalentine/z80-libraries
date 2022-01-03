@@ -64,6 +64,12 @@ typedef enum
     SIG_BREAK = 1
 } Signal_T;
 
+typedef struct _SysInfo_T
+{
+    char * version;
+    uint16_t numbanks;
+} SysInfo_T;
+
 /* Signal handler function pointer type. */
 typedef void (*SIGHANDLER_T)(uint16_t);
 
@@ -89,6 +95,6 @@ int syscall_pload(uintptr_t * addr, const char * filename);
 
 void syscall_sighandle(SIGHANDLER_T handle, Signal_T sig);
 
-const char * syscall_version(void);
+const SysInfo_T * syscall_sysinfo(void);
 
 #endif /* _SYSCALL_H */
