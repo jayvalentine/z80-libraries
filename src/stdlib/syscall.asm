@@ -10,7 +10,7 @@
     PUBLIC  _syscall_finfo
     PUBLIC  _syscall_fentries
     PUBLIC  _syscall_fentry
-    PUBLIC  _syscall_pexec
+    PUBLIC  _syscall_pspawn
     PUBLIC  _syscall_sighandle
     PUBLIC  _syscall_fdelete
     PUBLIC  _syscall_pload
@@ -30,7 +30,7 @@
     defc    FENTRIES = 20
     defc    FENTRY = 22
 
-    defc    PEXEC = 24
+    defc    PSPAWN = 24
 
     defc    SIGHANDLE = 26
 
@@ -250,8 +250,8 @@ _syscall_fentry:
     
     ret
 
-    ; int syscall_pexec(int pd, char ** argv, size_t argc)
-_syscall_pexec:
+    ; int syscall_pspawn(int pd, char ** argv, size_t argc)
+_syscall_pspawn:
     ld      HL, 2
     add     HL, SP
 
@@ -265,7 +265,7 @@ _syscall_pexec:
     ld      L, (IX+4)
     ld      H, (IX+5)
 
-    ld      A, PEXEC
+    ld      A, PSPAWN
     rst     48
     
     ret
