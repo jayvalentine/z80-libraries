@@ -250,7 +250,7 @@ _syscall_fentry:
     
     ret
 
-    ; int syscall_pexec(unit16_t addr, char ** argv, size_t argc)
+    ; int syscall_pexec(int pd, char ** argv, size_t argc)
 _syscall_pexec:
     ld      HL, 2
     add     HL, SP
@@ -304,7 +304,7 @@ _syscall_fdelete:
 
     ret
 
-    ; void syscall_pload(uint16_t * address, const char * filename)
+    ; int syscall_pload(const char * filename)
 _syscall_pload:
     ld      HL, 2
     add     HL, SP
@@ -314,8 +314,6 @@ _syscall_pload:
 
     ld      C, (IX+0)
     ld      B, (IX+1)
-    ld      E, (IX+2)
-    ld      D, (IX+3)
 
     ld      A, PLOAD
     rst     48
