@@ -6,5 +6,5 @@ int syscall_pexec(int pd, char ** argv, size_t argc)
 
     while (syscall_pstate(pd) != 2) {}
 
-    return -1;
+    return syscall_pexitcode(pd);
 }

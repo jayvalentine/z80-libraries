@@ -18,6 +18,7 @@
     PUBLIC  _syscall_sysinfo
     PUBLIC  _syscall_pstate
     PUBLIC  _syscall_pexit
+    PUBLIC  _syscall_pexitcode
 
     defc    DWRITE = 4
     defc    DREAD = 6
@@ -46,6 +47,7 @@
 
     defc    PSTATE = 36
     defc    PEXIT = 38
+    defc    PEXITCODE = 40
 
     ; void syscall_smode(uint8_t mode)
 _syscall_smode:
@@ -360,6 +362,22 @@ _syscall_pexit:
     ld      B, (IX+1)
 
     ld      A, PEXIT
+    rst     48
+
+    ret
+
+    ; int syscall_pexitcode(int pid)
+_syscall_pexitcode:
+    ld      HL, 2
+    add     HL, SP
+
+    push    HL
+    pop     IX
+
+    ld      C, (IX+0)
+    ld      B, (IX+1)
+
+    ld      A, PEXITCODE
     rst     48
 
     ret
