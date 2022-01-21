@@ -10,17 +10,17 @@
     ; convention.
     EXTERN  _user_main
 
-start:
-    ; Return address is TOS.
-    pop     HL
-    ld      HL, _exit
-    push    HL
-
-    jp    _user_main
-
     EXTERN  _syscall_pexit
 
-_exit:
-    ; Return value from main is in HL.
+start:
+    ; argv at 0xf810
+    ld      HL, 0xf810
+    push    HL
+
+    ; argc at 0xf800.
+    ld      HL, (0xf800)
+    push    HL
+
+    call    _user_main
     push    HL
     call    _syscall_pexit
