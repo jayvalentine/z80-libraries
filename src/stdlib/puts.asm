@@ -1,4 +1,6 @@
     PUBLIC  _puts
+
+    EXTERN  _putchar
     
     ; Syscall macro.
 define(zsys, `ld      A, $1 << 1
@@ -20,7 +22,7 @@ __puts_loop:
 
     ; Not null, print to serial port.
     ld      L, A
-    zsys(SWRITE)
+    call    _putchar
 
     ; Loop.
     jp      __puts_loop

@@ -1,10 +1,11 @@
     PUBLIC  _printf
 
+    EXTERN  _putchar
+
     ; Syscall macro.
 define(zsys, `ld      A, $1 << 1
     rst     48')
 
-    defc    SWRITE = 0
     defc    SREAD  = 1
 
     EXTERN  _printf_char
@@ -123,11 +124,11 @@ __printf_not_hex_lower:
 
 __printf_unrecognized:
     ld      L, '!'
-    zsys(SWRITE)
+    call    _putchar
     ld      L, '!'
-    zsys(SWRITE)
+    call    _putchar
     ld      L, '!'
-    zsys(SWRITE)
+    call    _putchar
 
 __printf_formatdone:
     ; Discard arguments.
@@ -145,7 +146,7 @@ __printf_noformat:
     ; Non-formatting mode. Character is in A.
     push    HL
     ld      L, A
-    zsys(SWRITE)
+    call    _putchar
     pop     HL
 
     jp      __printf_loop

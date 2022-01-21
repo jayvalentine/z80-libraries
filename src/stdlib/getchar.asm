@@ -4,7 +4,6 @@
 define(zsys, `ld      A, $1 << 1
     rst     48')
 
-    defc    SWRITE = 0
     defc    SREAD  = 1
     
     _getchar:
