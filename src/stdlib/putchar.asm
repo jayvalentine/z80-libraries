@@ -1,11 +1,11 @@
-    PUBLIC  _putchar
+    .globl  _putchar
 
     ; Syscall macro.
-define(zsys, `ld      A, $1 << 1
+define(zsys, `ld      A, #(0x1 << 1)
     rst     48')
 
-    defc    SWRITE = 0
-    defc    SREAD  = 1
+    .equ    SWRITE, 0
+    .equ    SREAD, 1
     
 _putchar:
     push    AF
@@ -13,12 +13,13 @@ _putchar:
     push    DE
     push    HL
 
-    ld      HL, SP
+    ld      HL, #0
+    add     HL, SP
     push    HL
     pop     DE
     
     ; Writing single byte.
-    ld      BC, 1
+    ld      BC, #1
 
     zsys(SWRITE)
     

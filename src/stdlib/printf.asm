@@ -1,28 +1,28 @@
-    PUBLIC  _printf
+    .globl  _printf
 
-    EXTERN  _putchar
+    .globl  _putchar
 
     ; Syscall macro.
-define(zsys, `ld      A, $1 << 1
+define(zsys, `ld      A, #(0x1 << 1)
     rst     48')
 
-    defc    SREAD  = 1
+    .equ    SREAD, 1
 
-    EXTERN  _printf_char
-    EXTERN  _printf_hex
-    EXTERN  _printf_unsigned
-    EXTERN  _printf_signed
-    EXTERN  _printf_string
-    EXTERN  _puts
+    .globl  _printf_char
+    .globl  _printf_hex
+    .globl  _printf_unsigned
+    .globl  _printf_signed
+    .globl  _printf_string
+    .globl  _puts
 
 _printf:
     ; A holds number of variadic args, apparently?
 
     ; Calculate number of bytes of variadic args.
     ; This is 2*A.
-    ld      H, 0
+    ld      H, #0
     sla     A ; FIXME: Won't work for more than 127 arguments.
-    add     2 ; Also skip past return value.
+    add     #2 ; Also skip past return value.
     ld      L, A
 
     ; Add to stack pointer.
@@ -43,11 +43,11 @@ __printf_loop:
     inc     DE
     
     ; Is it null?
-    cp      0
+    cp      #0
     jp      z, __printf_done
 
     ; Is it %?
-    cp      '%'
+    cp      #'%'
     jp      nz, __printf_noformat
 
 __printf_format:
@@ -61,14 +61,14 @@ __printf_format:
 
     push    HL
 
-    ld      A, ' '
+    ld      A, #' '
     ld      (_padding_char), A
 
     ; Any flags?
     ; So far we just handle zero-padding.
     ld      A, (DE)
 
-    cp      '0'
+    cp      #'0'
     jp      nz, __printf_flags_done
 
     ld      (_padding_char), A
@@ -88,46 +88,46 @@ __printf_flags_done:
     push    BC
     push    HL
 
-    cp      'c'
+    cp      #'c'
     jp      nz, __printf_not_char
 
     call    _printf_char
     jp      __printf_formatdone
 
 __printf_not_char:
-    cp      'u'
+    cp      #'u'
     jp      nz, __printf_not_unsigned
 
     call    _printf_unsigned
     jp      __printf_formatdone
 
 __printf_not_unsigned:
-    cp      'd'
+    cp      #'d'
     jp      nz, __printf_not_signed
 
     call    _printf_signed
     jp      __printf_formatdone
 
 __printf_not_signed:
-    cp      'x'
+    cp      #'x'
     jp      nz, __printf_not_hex_lower
 
     call    _printf_hex
     jp      __printf_formatdone
 
 __printf_not_hex_lower:
-    cp      's'
+    cp      #'s'
     jp      nz, __printf_unrecognized
 
     call    _printf_string
     jp      __printf_formatdone
 
 __printf_unrecognized:
-    ld      L, '!'
+    ld      L, #'!'
     call    _putchar
-    ld      L, '!'
+    ld      L, #'!'
     call    _putchar
-    ld      L, '!'
+    ld      L, #'!'
     call    _putchar
 
 __printf_formatdone:
@@ -153,24 +153,24 @@ __printf_noformat:
 
 __printf_done:
     ; Some arbitrary return value.
-    ld      HL, 1
+    ld      HL, #1
     ret
 
 __printf_get_padding:
-    ld      L, 0
+    ld      L, #0
 
     ld      A, (DE)
 
     ; First character of padding must be 1-9.
-    cp      '1'
+    cp      #'1'
     jp      c, __printf_get_padding_done
-    cp      ':'
+    cp      #':'
     jp      nc, __printf_get_padding_done
 
     inc     DE
 
     ; Convert _character_ 1-9 to _value_ 1-9 and add to our padding value.
-    sub     '0'
+    sub     #'0'
     add     L
     ld      L, A
 
@@ -178,9 +178,9 @@ __printf_get_padding_loop:
     ld      A, (DE)
 
     ; Loop while character between '0' and '9'
-    cp      '0'
+    cp      #'0'
     jp      c, __printf_get_padding_done
-    cp      ':'
+    cp      #':'
     jp      nc, __printf_get_padding_done
 
     ; It is padding!
@@ -190,7 +190,7 @@ __printf_get_padding_loop:
     call    __l_times_10
 
     ; Convert _character_ 1-9 to _value_ 1-9 and add to our padding value.
-    sub     '0'
+    sub     #'0'
     add     L
     ld      L, A
 
@@ -215,9 +215,9 @@ __l_times_10:
 
     ld      L, A
     ld      A, H
-    ld      H, 0
+    ld      H, #0
     ret
 
-    PUBLIC  _padding_char
+    .globl  _padding_char
 _padding_char:
-    defs    1
+    .ds     1

@@ -1,8 +1,8 @@
-    PUBLIC  _memset
+    .globl  _memset
     
     ; void * memset(void * s, int c, size_t n)
 _memset:
-    ld      HL, 2
+    ld      HL, #2
     add     HL, SP
 
     ; Set IX to start of parameter region.
@@ -10,15 +10,15 @@ _memset:
     pop     IX
 
     ; n into BC.
-    ld      C, (IX+0)
-    ld      B, (IX+1)
+    ld      C, 0(IX)
+    ld      B, 1(IX)
 
     ; c cast into unsigned char in E.
-    ld      E, (IX+3)
+    ld      E, 3(IX)
 
     ; s into HL.
-    ld      L, (IX+4)
-    ld      H, (IX+5)
+    ld      L, 4(IX)
+    ld      H, 5(IX)
 
 __memset_loop:
     ld      (HL), E

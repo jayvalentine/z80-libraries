@@ -1,4 +1,4 @@
-    PUBLIC  _strcmp
+    .globl  _strcmp
 
     ; int strcmp(const char *s1, const char *s2)
 _strcmp:
@@ -7,7 +7,7 @@ _strcmp:
     push    AF
 
     ; Skip over return address.
-    ld      HL, 8
+    ld      HL, #8
     add     HL, SP
 
     ; Load s2 into DE (second param).
@@ -33,7 +33,7 @@ __strcmp_compare:
     jp      nz, __strcmp_neq
 
     ; Otherwise, if null they are equal.
-    cp      0
+    cp      #0
     jp      z, __strcmp_eq
 
     ; Not reached end of string, equal so far.
@@ -43,11 +43,11 @@ __strcmp_compare:
     jp      __strcmp_compare
 
 __strcmp_eq:
-    ld      HL, 0
+    ld      HL, #0
     jp      __strcmp_done
 
 __strcmp_neq:
-    ld      HL, 1
+    ld      HL, #1
 
 __strcmp_done:
     pop     AF

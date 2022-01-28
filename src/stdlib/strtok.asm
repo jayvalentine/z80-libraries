@@ -1,4 +1,4 @@
-    PUBLIC  _strtok
+    .globl  _strtok
     
     ; char * strtok(char * s1, const char * s2)
     ;
@@ -9,19 +9,19 @@
     ; The first call in the sequence has s1 as its first argument,
     ; and is followed by calls with a null pointer as the first argument.
 _strtok:
-    ld      HL, 2
+    ld      HL, #2
     add     HL, SP
 
     push    HL
     pop     IX
 
     ; s2 into DE
-    ld      E, (IX+0)
-    ld      D, (IX+1)
+    ld      E, 0(IX)
+    ld      D, 1(IX)
 
     ; s1 into HL
-    ld      L, (IX+2)
-    ld      H, (IX+3)
+    ld      L, 2(IX)
+    ld      H, 3(IX)
 
     ; Is HL NULL (0)? If so, load the saved pointer instead.
     ld      A, L
@@ -38,7 +38,7 @@ __strtok_find_start:
 
     ; If we hit a null, we've reached the end of the string
     ; without finding a token.
-    cp      0
+    cp      #0
     jp      z, __strtok_done_notok
 
     ; Is this a separator character?
@@ -46,7 +46,7 @@ __strtok_find_start:
     call    __strtok_is_sep
 
     ; Keep searching until we hit a character not in the string.
-    cp      0
+    cp      #0
     jp      nz, __strtok_find_start
 
     ; If we hit this point, we've found a non-separator
@@ -64,7 +64,7 @@ __strtok_find_end:
     ; If we hit a null, we've found a token, in HL.
     ; We don't need to place a null terminator because
     ; it's already here.
-    cp      0
+    cp      #0
     jp      z, __strtok_done_tok_null
 
     ; Is this a separator?
@@ -72,7 +72,7 @@ __strtok_find_end:
     call    __strtok_is_sep
 
     ; Keep searching until we hit a character that is a separator.
-    cp      1
+    cp      #1
     jp      nz, __strtok_find_end
 
     ; If we hit this point, we've found a separator,
@@ -82,7 +82,7 @@ __strtok_find_end:
     ; store the current value of HL for the next call.
 __strtok_done_tok:
     dec     HL
-    ld      A, 0
+    ld      A, #0
     ld      (HL), A
     inc     HL
 
@@ -104,7 +104,7 @@ __strtok_done_tok_null:
 
 __strtok_done_notok:
     ; Return null.
-    ld      HL, 0
+    ld      HL, #0
     ret
 
     ; Helper function.
@@ -119,7 +119,7 @@ __strtok_is_sep_loop:
 
     ; We've hit null, so we've searched the string and not
     ; found a match.
-    cp      0
+    cp      #0
     jp      z, __strtok_is_sep_done
 
     ; Compare to B.
@@ -128,11 +128,11 @@ __strtok_is_sep_loop:
     jp      nz, __strtok_is_sep_loop
 
     ; Return 1 because we've found a match.
-    ld      A, 1
+    ld      A, #1
 
 __strtok_is_sep_done:
     pop     DE
     ret
 
 __strtok_saved_ptr:
-    defs    2
+    .ds     2

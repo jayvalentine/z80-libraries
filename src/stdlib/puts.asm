@@ -1,15 +1,15 @@
-    PUBLIC  _puts
+    .globl  _puts
 
-    EXTERN  _putchar
+    .globl  _putchar
     
     ; Syscall macro.
-define(zsys, `ld      A, $1 << 1
+define(zsys, `ld      A, (0x1 << 1)
     rst     48')
 
-    defc    SWRITE = 0
-    defc    SREAD  = 1
+    .equ    SWRITE, 0
+    .equ    SREAD,  1
 
-    EXTERN  _strlen
+    .globl  _strlen
 
 _puts:
     push    HL
@@ -29,5 +29,5 @@ _puts:
     zsys(SWRITE)
 
     ; Successful, return 0.
-    ld      HL, 0
+    ld      HL, #0
     ret

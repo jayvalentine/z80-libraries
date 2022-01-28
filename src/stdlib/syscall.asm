@@ -1,116 +1,116 @@
     ; Wrappers for OS syscalls.
     
-    PUBLIC  _syscall_dwrite
-    PUBLIC  _syscall_dread
-    PUBLIC  _syscall_fopen
-    PUBLIC  _syscall_fread
-    PUBLIC  _syscall_fwrite
-    PUBLIC  _syscall_fclose
-    PUBLIC  _syscall_dinfo
-    PUBLIC  _syscall_finfo
-    PUBLIC  _syscall_fentries
-    PUBLIC  _syscall_fentry
-    PUBLIC  _syscall_pspawn
-    PUBLIC  _syscall_sighandle
-    PUBLIC  _syscall_fdelete
-    PUBLIC  _syscall_pload
-    PUBLIC  _syscall_smode
-    PUBLIC  _syscall_sysinfo
-    PUBLIC  _syscall_pstate
-    PUBLIC  _syscall_pexit
-    PUBLIC  _syscall_pexitcode
+    .globl  _syscall_dwrite
+    .globl  _syscall_dread
+    .globl  _syscall_fopen
+    .globl  _syscall_fread
+    .globl  _syscall_fwrite
+    .globl  _syscall_fclose
+    .globl  _syscall_dinfo
+    .globl  _syscall_finfo
+    .globl  _syscall_fentries
+    .globl  _syscall_fentry
+    .globl  _syscall_pspawn
+    .globl  _syscall_sighandle
+    .globl  _syscall_fdelete
+    .globl  _syscall_pload
+    .globl  _syscall_smode
+    .globl  _syscall_sysinfo
+    .globl  _syscall_pstate
+    .globl  _syscall_pexit
+    .globl  _syscall_pexitcode
 
-    defc    DWRITE = 4
-    defc    DREAD = 6
+    .equ    DWRITE, 4
+    .equ    DREAD, 6
 
-    defc    FOPEN = 8
-    defc    FREAD = 10
-    defc    FWRITE = 12
-    defc    FCLOSE = 14
+    .equ    FOPEN, 8
+    .equ    FREAD, 10
+    .equ    FWRITE, 12
+    .equ    FCLOSE, 14
 
-    defc    DINFO = 16
-    defc    FINFO = 18
-    defc    FENTRIES = 20
-    defc    FENTRY = 22
+    .equ    DINFO, 16
+    .equ    FINFO, 18
+    .equ    FENTRIES, 20
+    .equ    FENTRY, 22
 
-    defc    PSPAWN = 24
+    .equ    PSPAWN, 24
 
-    defc    SIGHANDLE = 26
+    .equ    SIGHANDLE, 26
 
-    defc    FDELETE = 28
+    .equ    FDELETE, 28
 
-    defc    PLOAD = 30
+    .equ    PLOAD, 30
 
-    defc    SMODE = 32
+    .equ    SMODE, 32
 
-    defc    SYSINFO = 34
+    .equ    SYSINFO, 34
 
-    defc    PSTATE = 36
-    defc    PEXIT = 38
-    defc    PEXITCODE = 40
+    .equ    PSTATE, 36
+    .equ    PEXIT, 38
+    .equ    PEXITCODE, 40
 
     ; void syscall_smode(uint8_t mode)
 _syscall_smode:
     ; Get parameters.
-    ld      HL, 2
+    ld      HL, #2
     add     HL, SP
 
     ; Mode in C.
     ld      C, (HL)
 
-    ld      A, SMODE
+    ld      A, #SMODE
     rst     48
 
     ret
 
-    ; void syscall_dwrite(char * buf, uint32_t sector)
+    ; void syscall_dwrite(char * buf, #uint32_t sector)
 _syscall_dwrite:
     ; Get parameters.
-    ld      HL, 2
+    ld      HL, #2
     add     HL, SP
 
     push    HL
     pop     IX
 
-    ; Sector number, little-endian.
+    ; Sector number, #little-endian.
     ; Lowest 16 bytes is at the top of the stack.
-    ld      C, (IX+0)
-    ld      B, (IX+1)
-    ld      E, (IX+2)
-    ld      D, (IX+3)
+    ld      C, 0(IX)
+    ld      B, 1(IX)
+    ld      E, 2(IX)
+    ld      D, 3(IX)
 
     ; Pointer to write buffer.
-    ld      L, (IX+4)
-    ld      H, (IX+5)
+    ld      L, 4(IX)
+    ld      H, 5(IX)
 
     ; Call dwrite syscall.
-    ld      A, DWRITE
+    ld      A, #DWRITE
     rst     48
 
     ret
 
-    ; void syscall_dread(char * buf, uint32_t sector)
+    ; void syscall_dread(char * buf, #uint32_t sector)
 _syscall_dread:
     ; Get parameters.
-    ld      HL, 2
+    ld      HL, #2
     add     HL, SP
 
     push    HL
     pop     IX
 
-    ; Sector number, little-endian.
+    ; Sector number, #little-endian.
     ; Lowest 16 bytes is at the top of the stack.
-    ld      C, (IX+0)
-    ld      B, (IX+1)
-    ld      E, (IX+2)
-    ld      D, (IX+3)
+    ld      C, 0(IX)
+    ld      B, 1(IX)
+    ld      E, 2(IX)
+    ld      D, 3(IX)
 
     ; Pointer to read buffer.
-    ld      L, (IX+4)
-    ld      H, (IX+5)
+    ld      L, 4(IX)
+    ld      H, 5(IX)
 
     ; Call dread syscall.
-    ld      A, DREAD
+    ld      A, #DREAD
     rst     48
 
     ret
@@ -118,266 +118,266 @@ _syscall_dread:
     ; DiskInfo_T * syscall_dinfo(void)
 _syscall_dinfo:
     ; Call dinfo syscall.
-    ld      A, DINFO
+    ld      A, #DINFO
     rst     48
 
     ret
 
-    ; int syscall_fopen(const char * filename, uint8_t mode)
+    ; int syscall_fopen(const char * filename, #uint8_t mode)
 _syscall_fopen:
     ; Get parameters.
-    ld      HL, 2
+    ld      HL, #2
     add     HL, SP
 
     push    HL
     pop     IX
 
     ; mode in C.
-    ld      C, (IX+0)
+    ld      C, 0(IX)
 
     ; filename in DE
-    ld      E, (IX+2)
-    ld      D, (IX+3)
+    ld      E, 2(IX)
+    ld      D, 3(IX)
 
     ; fopen syscall.
-    ld      A, FOPEN
+    ld      A, #FOPEN
     rst     48
 
     ret
 
-    ; size_t syscall_fread(char * ptr, size_t n, int fd)
+    ; size_t syscall_fread(char * ptr, #size_t n, #int fd)
 _syscall_fread:
     ; Get parameters
-    ld      HL, 2
+    ld      HL, #2
     add     HL, SP
 
     push    HL
     pop     IX
 
     ; fd in BC
-    ld      C, (IX+0)
-    ld      B, (IX+1)
+    ld      C, 0(IX)
+    ld      B, 1(IX)
 
     ; n in DE
-    ld      E, (IX+2)
-    ld      D, (IX+3)
+    ld      E, 2(IX)
+    ld      D, 3(IX)
 
     ; ptr in HL
-    ld      L, (IX+4)
-    ld      H, (IX+5)
+    ld      L, 4(IX)
+    ld      H, 5(IX)
 
     ; fread syscall.
-    ld      A, FREAD
+    ld      A, #FREAD
     rst     48
 
     ret
 
-    ; size_t syscall_fwrite(char * ptr, size_t n, int fd)
+    ; size_t syscall_fwrite(char * ptr, #size_t n, #int fd)
 _syscall_fwrite:
     ; Get parameters
-    ld      HL, 2
+    ld      HL, #2
     add     HL, SP
 
     push    HL
     pop     IX
 
     ; fd in BC
-    ld      C, (IX+0)
-    ld      B, (IX+1)
+    ld      C, 0(IX)
+    ld      B, 1(IX)
 
     ; n in DE
-    ld      E, (IX+2)
-    ld      D, (IX+3)
+    ld      E, 2(IX)
+    ld      D, 3(IX)
 
     ; ptr in HL
-    ld      L, (IX+4)
-    ld      H, (IX+5)
+    ld      L, 4(IX)
+    ld      H, 5(IX)
 
     ; fwrite syscall.
-    ld      A, FWRITE
+    ld      A, #FWRITE
     rst     48
 
     ret
 
     ; void syscall_fclose(int fd)
 _syscall_fclose:
-    ld      HL, 2
+    ld      HL, #2
     add     HL, SP
 
     push    HL
     pop     IX
 
-    ld      C, (IX+0)
-    ld      B, (IX+1)
+    ld      C, 0(IX)
+    ld      B, 1(IX)
 
-    ld      A, FCLOSE
+    ld      A, #FCLOSE
     rst     48
 
     ret
 
-    ; int syscall_finfo(const char * filename, FINFO * finfo)
+    ; int syscall_finfo(const char * filename, #FINFO * finfo)
 _syscall_finfo:
-    ld      HL, 2
+    ld      HL, #2
     add     HL, SP
 
     push    HL
     pop     IX
 
-    ld      C, (IX+0)
-    ld      B, (IX+1)
-    ld      E, (IX+2)
-    ld      D, (IX+3)
+    ld      C, 0(IX)
+    ld      B, 1(IX)
+    ld      E, 2(IX)
+    ld      D, 3(IX)
 
-    ld      A, FINFO
+    ld      A, #FINFO
     rst     48
 
     ret
 
     ; int syscall_fentries(void)
 _syscall_fentries:
-    ld      A, FENTRIES
+    ld      A, #FENTRIES
     rst     48
     ret
 
-    ; int syscall_fentry(char * s, int entry)
+    ; int syscall_fentry(char * s, #int entry)
 _syscall_fentry:
-    ld      HL, 2
+    ld      HL, #2
     add     HL, SP
 
     push    HL
     pop     IX
 
-    ld      C, (IX+0)
-    ld      B, (IX+1)
-    ld      E, (IX+2)
-    ld      D, (IX+3)
+    ld      C, 0(IX)
+    ld      B, 1(IX)
+    ld      E, 2(IX)
+    ld      D, 3(IX)
 
-    ld      A, FENTRY
+    ld      A, #FENTRY
     rst     48
     
     ret
 
-    ; int syscall_pspawn(int pd, char ** argv, size_t argc)
+    ; int syscall_pspawn(int pd, #char ** argv, #size_t argc)
 _syscall_pspawn:
-    ld      HL, 2
+    ld      HL, #2
     add     HL, SP
 
     push    HL
     pop     IX
 
-    ld      C, (IX+0)
-    ld      B, (IX+1)
-    ld      E, (IX+2)
-    ld      D, (IX+3)
-    ld      L, (IX+4)
-    ld      H, (IX+5)
+    ld      C, 0(IX)
+    ld      B, 1(IX)
+    ld      E, 2(IX)
+    ld      D, 3(IX)
+    ld      L, 4(IX)
+    ld      H, 5(IX)
 
-    ld      A, PSPAWN
+    ld      A, #PSPAWN
     rst     48
     
     ret
 
-    ; void syscall_sighandle(SIGHANDLE_T handle, int sig)
+    ; void syscall_sighandle(SIGHANDLE_T handle, #int sig)
 _syscall_sighandle:
-    ld      HL, 2
+    ld      HL, #2
     add     HL, SP
 
     push    HL
     pop     IX
 
-    ld      C, (IX+0)
-    ld      B, (IX+1)
-    ld      E, (IX+2)
-    ld      D, (IX+3)
+    ld      C, 0(IX)
+    ld      B, 1(IX)
+    ld      E, 2(IX)
+    ld      D, 3(IX)
 
-    ld      A, SIGHANDLE
+    ld      A, #SIGHANDLE
     rst     48
 
     ret
 
     ; void syscall_fdelete(const char * filename)
 _syscall_fdelete:
-    ld      HL, 2
+    ld      HL, #2
     add     HL, SP
 
     push    HL
     pop     IX
 
-    ld      C, (IX+0)
-    ld      B, (IX+1)
+    ld      C, 0(IX)
+    ld      B, 1(IX)
 
-    ld      A, FDELETE
+    ld      A, #FDELETE
     rst     48
 
     ret
 
     ; int syscall_pload(const char * filename)
 _syscall_pload:
-    ld      HL, 2
+    ld      HL, #2
     add     HL, SP
 
     push    HL
     pop     IX
 
-    ld      C, (IX+0)
-    ld      B, (IX+1)
+    ld      C, 0(IX)
+    ld      B, 1(IX)
 
-    ld      A, PLOAD
+    ld      A, #PLOAD
     rst     48
 
     ret
 
     ; const SysInfo_T * syscall_sysinfo(void)
 _syscall_sysinfo:
-    ld      A, SYSINFO
+    ld      A, #SYSINFO
     rst     48
 
     ret
 
     ; int syscall_pstate(int pid)
 _syscall_pstate:
-    ld      HL, 2
+    ld      HL, #2
     add     HL, SP
 
     push    HL
     pop     IX
 
-    ld      C, (IX+0)
-    ld      B, (IX+1)
+    ld      C, 0(IX)
+    ld      B, 1(IX)
 
-    ld      A, PSTATE
+    ld      A, #PSTATE
     rst     48
 
     ret
 
     ; void syscall_pexit(int pid)
 _syscall_pexit:
-    ld      HL, 2
+    ld      HL, #2
     add     HL, SP
 
     push    HL
     pop     IX
 
-    ld      C, (IX+0)
-    ld      B, (IX+1)
+    ld      C, 0(IX)
+    ld      B, 1(IX)
 
-    ld      A, PEXIT
+    ld      A, #PEXIT
     rst     48
 
     ret
 
     ; int syscall_pexitcode(int pid)
 _syscall_pexitcode:
-    ld      HL, 2
+    ld      HL, #2
     add     HL, SP
 
     push    HL
     pop     IX
 
-    ld      C, (IX+0)
-    ld      B, (IX+1)
+    ld      C, 0(IX)
+    ld      B, 1(IX)
 
-    ld      A, PEXITCODE
+    ld      A, #PEXITCODE
     rst     48
 
     ret
