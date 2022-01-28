@@ -15,16 +15,26 @@
 
 require_relative 'vars.rb'
 
-rule ".o" => ".c" do |t|
-    system("zcc +#{CONFIG} -compiler=sccz80 -O2 -I#{File.join(HERE, "include")} --no-crt -c -o #{t.name} #{t.source}")
+rule ".rel" => ".c" do |task|
+    cmd = "sdcc -c -mz80 "
+    cmd += "-o\"#{task.name}\" "
+    cmd += "-I#{File.dirname(task.source)} "
+    cmd += "-I#{LIB_INCLUDE} "
+    cmd += "#{task.source}"
+    system(cmd)
+    FileUtils.rm("#{File.dirname(task.source)}/#{File.basename(task.source, ".c")}.asm")
 end
 
-rule ".o" => ".asm" do |t|
-    temp_dir = File.join(File.dirname(t.source), "tmp")
+rule ".rel" => ".asm" do |task|
+    temp_dir = File.join(File.dirname(task.source), "tmp")
     FileUtils.mkdir(temp_dir) unless Dir.exist?(temp_dir)
 
-    system("m4 #{t.source} > #{temp_dir}/#{File.basename(t.source)}")
-    system("z80asm -mz80 -o#{t.name} #{temp_dir}/#{File.basename(t.source)}")
+    system("m4 #{task.source} > #{temp_dir}/#{File.basename(task.source)}")
+    
+    cmd = "sdasz80 -plosgffw "
+    cmd += "#{task.name} "
+    cmd += "#{temp_dir}/#{File.basename(task.source)}"
+    system(cmd)
 end
 
 namespace 'lib' do
@@ -45,13 +55,15 @@ namespace 'lib' do
         dependencies = Rake::FileList.new([File.join(HERE, "src", lib, "*.asm"), File.join(HERE, "src", lib, "*.c")])
         
         desc "Build library '#{lib}'"
-        task lib => (["prebuild_#{lib}"] + dependencies.ext('.o')) do
+        task lib => (["prebuild_#{lib}"] + dependencies.ext('.rel')) do
             # Delete temporary files (if they exist).
             if Dir.exist? File.join(HERE, "src", lib, "tmp")
                 FileUtils.rm_r(File.join(HERE, "src", lib, "tmp"))
             end
 
-            system("z80asm -x#{File.join(HERE, lib)}.lib #{dependencies.ext('.o').to_a.join(" ")}")
+            cmd = "sdar -rc #{File.join(HERE, lib)}.lib #{dependencies.ext('.rel').to_a.join(" ")}"
+            puts cmd
+            system(cmd)
         end
 
         desc "Clean generated files and output from compiling library '#{lib}'"
