@@ -4,6 +4,7 @@ src/**/*.inc
 
 # Built artefacts
 *.o
+*.rel
 *.hex
 *.bin
 *.diss
@@ -11,4 +12,8 @@ src/**/*.inc
 
 # Libraries
 *.lib
+
+# Intermediate files
+*.sym
+*.lst
 
