@@ -1,14 +1,15 @@
     .globl  _getchar
 
-    ; Syscall macro.
-define(zsys, `ld      A, #(0x1 << 1)
-    rst     48')
+    .macro  zsys
+    ld      A, #(1 << \1)
+    rst     48
+    .endm
 
     .equ    SREAD, 1
     
-    _getchar:
+_getchar:
     push    AF
-    zsys(SREAD)
+    zsys    SREAD
     ld      H, #0
     ld      L, A
     pop     AF

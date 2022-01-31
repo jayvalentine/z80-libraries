@@ -1,8 +1,9 @@
     .globl  _putchar
 
-    ; Syscall macro.
-define(zsys, `ld      A, #(0x1 << 1)
-    rst     48')
+    .macro  zsys
+    ld      A, #(1 << \1)
+    rst     48
+    .endm
 
     .equ    SWRITE, 0
     .equ    SREAD, 1
@@ -21,7 +22,7 @@ _putchar:
     ; Writing single byte.
     ld      BC, #1
 
-    zsys(SWRITE)
+    zsys    SWRITE
     
     pop     HL
     pop     DE

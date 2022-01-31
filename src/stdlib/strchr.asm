@@ -4,18 +4,20 @@
     ;
     ; Returns the first occurance of char c in s, or NULL if no occurance.
 _strchr:
-    ld      HL, #2
+    push    IX
+
+    ld      HL, #4
     add     HL, SP
 
     push    HL
     pop     IX
 
     ; (char)c into C. We discard the upper half.
-    ld      C, 0(IX)
+    ld      C, 2(IX)
     
     ; s into HL.
-    ld      L, 2(IX)
-    ld      H, 3(IX)
+    ld      L, 0(IX)
+    ld      H, 1(IX)
 
 __strchr_loop:
     ld      A, (HL)
@@ -29,9 +31,11 @@ __strchr_loop:
     jp      __strchr_loop
 
 __strchr_found:
+    pop     IX
     ret
 
 __strchr_end:
     ; Not found; return NULL.
     ld      HL, #0
+    pop     IX
     ret

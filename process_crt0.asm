@@ -8,13 +8,13 @@
     ; Naming the function something different
     ; allows us to use the normal calling
     ; convention.
-    EXTERN  _user_main
+    .globl  _user_main
 
-    EXTERN  _syscall_pexit
+    .globl  _syscall_pexit
 
 start:
     ; argv at 0xf810
-    ld      HL, 0xf810
+    ld      HL, #0xf810
     push    HL
 
     ; argc at 0xf800.

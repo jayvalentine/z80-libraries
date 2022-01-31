@@ -2,9 +2,10 @@
 
     .globl  _putchar
     
-    ; Syscall macro.
-define(zsys, `ld      A, (0x1 << 1)
-    rst     48')
+    .macro  zsys
+    ld      A, #(1 << \1)
+    rst     48
+    .endm
 
     .equ    SWRITE, 0
     .equ    SREAD,  1
@@ -26,7 +27,7 @@ _puts:
     ; Write to serial port.
     ; DE - string pointer
     ; BC - length
-    zsys(SWRITE)
+    zsys    SWRITE
 
     ; Successful, return 0.
     ld      HL, #0

@@ -15,30 +15,10 @@
 
 require_relative 'vars.rb'
 
-rule ".rel" => ".c" do |task|
-    cmd = "sdcc -c -mz80 "
-    cmd += "-o\"#{task.name}\" "
-    cmd += "-I#{File.dirname(task.source)} "
-    cmd += "-I#{LIB_INCLUDE} "
-    cmd += "#{task.source}"
-    system(cmd)
-    FileUtils.rm("#{File.dirname(task.source)}/#{File.basename(task.source, ".c")}.asm")
-end
-
-rule ".rel" => ".asm" do |task|
-    temp_dir = File.join(File.dirname(task.source), "tmp")
-    FileUtils.mkdir(temp_dir) unless Dir.exist?(temp_dir)
-
-    system("m4 #{task.source} > #{temp_dir}/#{File.basename(task.source)}")
-    
-    cmd = "sdasz80 -plosgffw "
-    cmd += "#{task.name} "
-    cmd += "#{temp_dir}/#{File.basename(task.source)}"
-    system(cmd)
-end
-
 namespace 'lib' do
-    task 'crt0' => "#{HERE}/crt0.o"
+    task 'crt0' => "#{HERE}/crt0.rel"
+
+    task 'process_crt0' => "#{HERE}/process_crt0.rel"
 
     Dir.glob("#{HERE}/src/*").each do |path|
         lib = File.basename(path)
@@ -68,7 +48,7 @@ namespace 'lib' do
 
         desc "Clean generated files and output from compiling library '#{lib}'"
         task "clean:#{lib}" do
-            Dir.glob(File.join(HERE, "src", lib, "**", "*.o")).each do |o|
+            Dir.glob(File.join(HERE, "src", lib, "**", "*.rel")).each do |o|
                 FileUtils.rm(o)
             end
 

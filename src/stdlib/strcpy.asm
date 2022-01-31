@@ -2,19 +2,21 @@
     
     ; char * strcpy(char * s1, const char * s2)
 _strcpy:
-    ld      HL, #2
+    push    IX
+
+    ld      HL, #4
     add     HL, SP
 
     push    HL
     pop     IX
 
     ; s2 into HL
-    ld      L, 0(IX)
-    ld      H, 1(IX)
+    ld      L, 2(IX)
+    ld      H, 3(IX)
 
     ; s1 into DE
-    ld      E, 2(IX)
-    ld      D, 3(IX)
+    ld      E, 0(IX)
+    ld      D, 1(IX)
 
 __strcpy_loop:
     ld      A, (HL)
@@ -37,6 +39,7 @@ __strcpy_done:
     
     ; Return value is s1.
     ; IX still points to the parameter region, so we can load off that.
-    ld      L, 2(IX)
-    ld      H, 3(IX)
+    ld      L, 0(IX)
+    ld      H, 1(IX)
+    pop     IX
     ret

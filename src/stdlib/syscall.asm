@@ -125,30 +125,35 @@ _syscall_dinfo:
 
     ; int syscall_fopen(const char * filename, #uint8_t mode)
 _syscall_fopen:
+    push    IX
+
     ; Get parameters.
-    ld      HL, #2
+    ld      HL, #4
     add     HL, SP
 
     push    HL
     pop     IX
 
-    ; mode in C.
-    ld      C, 0(IX)
-
-    ; filename in DE
+    ; mode in E.
     ld      E, 2(IX)
-    ld      D, 3(IX)
+
+    ; filename in BC
+    ld      C, 0(IX)
+    ld      B, 1(IX)
 
     ; fopen syscall.
     ld      A, #FOPEN
     rst     48
 
+    pop     IX
     ret
 
     ; size_t syscall_fread(char * ptr, #size_t n, #int fd)
 _syscall_fread:
+    push    IX
+
     ; Get parameters
-    ld      HL, #2
+    ld      HL, #4
     add     HL, SP
 
     push    HL
@@ -170,18 +175,21 @@ _syscall_fread:
     ld      A, #FREAD
     rst     48
 
+    pop     IX
     ret
 
     ; size_t syscall_fwrite(char * ptr, #size_t n, #int fd)
 _syscall_fwrite:
+    push    IX
+
     ; Get parameters
-    ld      HL, #2
+    ld      HL, #4
     add     HL, SP
 
     push    HL
     pop     IX
 
-    ; fd in BC
+    ; ptr in BC
     ld      C, 0(IX)
     ld      B, 1(IX)
 
@@ -189,7 +197,7 @@ _syscall_fwrite:
     ld      E, 2(IX)
     ld      D, 3(IX)
 
-    ; ptr in HL
+    ; fd in HL
     ld      L, 4(IX)
     ld      H, 5(IX)
 
@@ -197,11 +205,14 @@ _syscall_fwrite:
     ld      A, #FWRITE
     rst     48
 
+    pop     IX
     ret
 
     ; void syscall_fclose(int fd)
 _syscall_fclose:
-    ld      HL, #2
+    push    IX
+
+    ld      HL, #4
     add     HL, SP
 
     push    HL
@@ -212,6 +223,8 @@ _syscall_fclose:
 
     ld      A, #FCLOSE
     rst     48
+
+    pop     IX
 
     ret
 
@@ -257,9 +270,11 @@ _syscall_fentry:
     
     ret
 
-    ; int syscall_pspawn(int pd, #char ** argv, #size_t argc)
+    ; int syscall_pspawn(int pd, char ** argv, size_t argc)
 _syscall_pspawn:
-    ld      HL, #2
+    push    IX
+
+    ld      HL, #4
     add     HL, SP
 
     push    HL
@@ -275,6 +290,7 @@ _syscall_pspawn:
     ld      A, #PSPAWN
     rst     48
     
+    pop     IX
     ret
 
     ; void syscall_sighandle(SIGHANDLE_T handle, #int sig)
@@ -313,7 +329,9 @@ _syscall_fdelete:
 
     ; int syscall_pload(const char * filename)
 _syscall_pload:
-    ld      HL, #2
+    push    IX
+
+    ld      HL, #4
     add     HL, SP
 
     push    HL
@@ -325,6 +343,7 @@ _syscall_pload:
     ld      A, #PLOAD
     rst     48
 
+    pop     IX
     ret
 
     ; const SysInfo_T * syscall_sysinfo(void)
@@ -336,7 +355,9 @@ _syscall_sysinfo:
 
     ; int syscall_pstate(int pid)
 _syscall_pstate:
-    ld      HL, #2
+    push    IX
+
+    ld      HL, #4
     add     HL, SP
 
     push    HL
@@ -348,11 +369,14 @@ _syscall_pstate:
     ld      A, #PSTATE
     rst     48
 
+    pop     IX
     ret
 
     ; void syscall_pexit(int pid)
 _syscall_pexit:
-    ld      HL, #2
+    push    IX
+
+    ld      HL, #4
     add     HL, SP
 
     push    HL
@@ -364,11 +388,14 @@ _syscall_pexit:
     ld      A, #PEXIT
     rst     48
 
+    pop     IX
     ret
 
     ; int syscall_pexitcode(int pid)
 _syscall_pexitcode:
-    ld      HL, #2
+    push    IX
+
+    ld      HL, #4
     add     HL, SP
 
     push    HL
@@ -380,4 +407,5 @@ _syscall_pexitcode:
     ld      A, #PEXITCODE
     rst     48
 
+    pop     IX
     ret

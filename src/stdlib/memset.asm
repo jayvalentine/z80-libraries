@@ -2,7 +2,9 @@
     
     ; void * memset(void * s, int c, size_t n)
 _memset:
-    ld      HL, #2
+    push    IX
+
+    ld      HL, #4
     add     HL, SP
 
     ; Set IX to start of parameter region.
@@ -10,15 +12,15 @@ _memset:
     pop     IX
 
     ; n into BC.
-    ld      C, 0(IX)
-    ld      B, 1(IX)
+    ld      C, 4(IX)
+    ld      B, 5(IX)
 
     ; c cast into unsigned char in E.
-    ld      E, 3(IX)
+    ld      E, 2(IX)
 
     ; s into HL.
-    ld      L, 4(IX)
-    ld      H, 5(IX)
+    ld      L, 0(IX)
+    ld      H, 1(IX)
 
 __memset_loop:
     ld      (HL), E
@@ -31,4 +33,5 @@ __memset_loop:
     jp      nz, __memset_loop
 
 __memset_done:
+    pop     IX
     ret

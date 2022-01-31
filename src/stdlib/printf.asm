@@ -1,11 +1,7 @@
     .globl  _printf
 
     .globl  _putchar
-
-    ; Syscall macro.
-define(zsys, `ld      A, #(0x1 << 1)
-    rst     48')
-
+    
     .equ    SREAD, 1
 
     .globl  _printf_char
