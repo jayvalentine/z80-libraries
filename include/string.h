@@ -8,11 +8,7 @@
 
 int strcmp(const char *s1, const char *s2);
 
-#ifdef Z88DK
-size_t strlen(const char * s) __z88dk_fastcall;
-#else
 size_t strlen(const char * s);
-#endif
 
 char * strtok(char * s1, const char * s2);
 char * strchr(const char * s, int c);

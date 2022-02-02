@@ -159,7 +159,7 @@ _syscall_fread:
     push    HL
     pop     IX
 
-    ; fd in BC
+    ; ptr in BC
     ld      C, 0(IX)
     ld      B, 1(IX)
 
@@ -167,7 +167,7 @@ _syscall_fread:
     ld      E, 2(IX)
     ld      D, 3(IX)
 
-    ; ptr in HL
+    ; fd in HL
     ld      L, 4(IX)
     ld      H, 5(IX)
 

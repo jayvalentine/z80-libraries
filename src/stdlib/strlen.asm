@@ -1,9 +1,17 @@
     .globl  _strlen
     
-    ; size_t strlen(const char * s) __z88dk_fastcall
+    ; size_t strlen(const char * s)
 _strlen:
-    ; Parameter is in HL. Move into DE.
-    ex      DE, HL
+    push    IX
+
+    ld      HL, #2
+    add     HL, SP
+    push    HL
+    pop     IX
+
+    ; Get string length into DE.
+    ld      E, 0(IX)
+    ld      D, 1(IX)
 
     ld      HL, #0
 __strlen_loop:
@@ -18,4 +26,5 @@ __strlen_loop:
     jp      __strlen_loop
 
 __strlen_done:
+    pop     IX
     ret

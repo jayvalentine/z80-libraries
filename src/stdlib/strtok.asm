@@ -9,19 +9,21 @@
     ; The first call in the sequence has s1 as its first argument,
     ; and is followed by calls with a null pointer as the first argument.
 _strtok:
-    ld      HL, #2
+    push    IX
+
+    ld      HL, #4
     add     HL, SP
 
     push    HL
     pop     IX
 
     ; s2 into DE
-    ld      E, 0(IX)
-    ld      D, 1(IX)
+    ld      E, 2(IX)
+    ld      D, 3(IX)
 
     ; s1 into HL
-    ld      L, 2(IX)
-    ld      H, 3(IX)
+    ld      L, 0(IX)
+    ld      H, 1(IX)
 
     ; Is HL NULL (0)? If so, load the saved pointer instead.
     ld      A, L
@@ -90,6 +92,7 @@ __strtok_done_tok:
 
     ; Return token start, which is on stack.
     pop     HL
+    pop     IX
     ret
 
     ; We've reached the end of the string.
@@ -100,11 +103,13 @@ __strtok_done_tok_null:
     ld      (__strtok_saved_ptr), HL
 
     pop     HL
+    pop     IX
     ret
 
 __strtok_done_notok:
     ; Return null.
     ld      HL, #0
+    pop     IX
     ret
 
     ; Helper function.
@@ -132,6 +137,7 @@ __strtok_is_sep_loop:
 
 __strtok_is_sep_done:
     pop     DE
+    pop     IX
     ret
 
 __strtok_saved_ptr:
