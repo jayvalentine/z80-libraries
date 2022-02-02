@@ -2,27 +2,25 @@
 
     ; int strcmp(const char *s1, const char *s2)
 _strcmp:
+    push    IX
+
     push    BC
     push    DE
     push    AF
 
     ; Skip over return address.
-    ld      HL, #8
+    ld      HL, #10
     add     HL, SP
+    push    HL
+    pop     IX
 
     ; Load s2 into DE (second param).
-    ld      E, (HL)
-    inc     HL
-    ld      D, (HL)
-    inc     HL
+    ld      E, 2(IX)
+    ld      D, 3(IX)
 
     ; Load s1 into HL (first param).
-    ld      C, (HL)
-    inc     HL
-    ld      B, (HL)
-
-    ld      H, B
-    ld      L, C
+    ld      L, 0(IX)
+    ld      H, 1(IX)
 
 __strcmp_compare:
     ld      A, (DE)
@@ -53,4 +51,6 @@ __strcmp_done:
     pop     AF
     pop     DE
     pop     BC
+
+    pop     IX
     ret

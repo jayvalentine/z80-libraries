@@ -1,12 +1,4 @@
     .globl  _putchar
-
-    .macro  zsys
-    ld      A, #(1 << \1)
-    rst     48
-    .endm
-
-    .equ    SWRITE, 0
-    .equ    SREAD, 1
     
 _putchar:
     push    IX
@@ -21,7 +13,8 @@ _putchar:
     ; Writing single byte.
     ld      DE, #1
 
-    zsys    SWRITE
+    ld      A, #0
+    rst     48
     
     pop     IX
     ret

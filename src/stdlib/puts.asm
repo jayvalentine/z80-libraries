@@ -1,15 +1,5 @@
     .globl  _puts
 
-    .globl  _putchar
-    
-    .macro  zsys
-    ld      A, #(1 << \1)
-    rst     48
-    .endm
-
-    .equ    SWRITE, 0
-    .equ    SREAD,  1
-
     .globl  _strlen
 
 _puts:
@@ -36,7 +26,8 @@ _puts:
     ; Write to serial port.
     ; DE - string pointer
     ; BC - length
-    zsys    SWRITE
+    ld      A, #0
+    rst     48
 
     ; Successful, return 0.
     ld      HL, #0

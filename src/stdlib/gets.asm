@@ -1,12 +1,5 @@
     .globl  _gets
 
-    .macro  zsys
-    ld      A, #(1 << \1)
-    rst     48
-    .endm
-
-    .equ    SREAD, 1
-
     .globl  _putchar
     .globl  _puts
 
@@ -17,7 +10,9 @@ _gets:
 __gets_loop:
     ; Get a char from serial port and test
     ; to see if it's a newline.
-    zsys    SREAD
+    ld      A, #2
+    rst     48
+
     cp      #0x0a
     jp      z, __gets_done
     cp      #0x0d
