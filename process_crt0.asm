@@ -13,12 +13,12 @@
     .globl  _syscall_pexit
 
 start:
-    ; argv at 0xf810
-    ld      HL, #0xf810
-    push    HL
-
     ; argc at 0xf800.
     ld      HL, (0xf800)
+    push    HL
+    
+    ; argv at 0xf810
+    ld      HL, #0xf810
     push    HL
 
     call    _user_main
