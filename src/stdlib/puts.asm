@@ -13,16 +13,25 @@
     .globl  _strlen
 
 _puts:
-    push    HL
+    push    IX
 
-    ; Get string length (in HL).
+    ld      HL, #4
+    add     HL, SP
+    push    HL
+    pop     IX
+
+    ld      L, 0(IX)
+    ld      H, 1(IX)
+
+    ; Get string length.
+    push    HL
     call    _strlen
 
     ; Move length into BC.
     push    HL
-    pop     BC
+    pop     DE
 
-    pop     DE ; String pointer.
+    pop     BC ; String pointer.
 
     ; Write to serial port.
     ; DE - string pointer
@@ -31,4 +40,5 @@ _puts:
 
     ; Successful, return 0.
     ld      HL, #0
+    pop     IX
     ret

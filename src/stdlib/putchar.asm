@@ -9,23 +9,19 @@
     .equ    SREAD, 1
     
 _putchar:
-    push    AF
-    push    BC
-    push    DE
-    push    HL
+    push    IX
 
-    ld      HL, #0
+    ld      HL, #4
     add     HL, SP
     push    HL
-    pop     DE
+
+    ; Address of byte to write on stack.
+    pop     BC
     
     ; Writing single byte.
-    ld      BC, #1
+    ld      DE, #1
 
     zsys    SWRITE
     
-    pop     HL
-    pop     DE
-    pop     BC
-    pop     AF
+    pop     IX
     ret
