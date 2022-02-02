@@ -14,7 +14,7 @@ void printf_char(int16_t c, uint8_t padding)
     putchar(c);
 }
 
-char printf_hex_digit(uint8_t d)
+void printf_hex_digit(uint8_t d)
 {
     char c;
 
