@@ -4,7 +4,7 @@
 _strlen:
     push    IX
 
-    ld      HL, #2
+    ld      HL, #4
     add     HL, SP
     push    HL
     pop     IX
