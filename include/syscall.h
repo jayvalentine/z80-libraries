@@ -58,11 +58,9 @@ typedef enum
     E_INVALIDHEADER = -11
 } FileError_T;
 
-typedef enum
-{
-    SIG_CANCEL = 0,
-    SIG_BREAK = 1
-} Signal_T;
+typedef int Signal_T;
+#define SIG_CANCEL 0x00
+#define SIG_BREAK 0x01
 
 typedef struct _SysInfo_T
 {
