@@ -295,7 +295,9 @@ _syscall_pspawn:
 
     ; void syscall_sighandle(SIGHANDLE_T handle, #int sig)
 _syscall_sighandle:
-    ld      HL, #2
+    push    IX
+
+    ld      HL, #4
     add     HL, SP
 
     push    HL
@@ -309,11 +311,14 @@ _syscall_sighandle:
     ld      A, #SIGHANDLE
     rst     48
 
+    pop     IX
     ret
 
     ; void syscall_fdelete(const char * filename)
 _syscall_fdelete:
-    ld      HL, #2
+    push    IX
+
+    ld      HL, #4
     add     HL, SP
 
     push    HL
@@ -325,6 +330,7 @@ _syscall_fdelete:
     ld      A, #FDELETE
     rst     48
 
+    pop     IX
     ret
 
     ; int syscall_pload(const char * filename)

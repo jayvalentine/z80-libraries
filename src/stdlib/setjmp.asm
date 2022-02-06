@@ -51,13 +51,13 @@ __longjmp:
     push    HL
     pop     IX
     
-    ld      L, 0(IX)
-    ld      H, 1(IX)
+    ld      L, 2(IX)
+    ld      H, 3(IX)
 
     ld      (__longjmp_tmp_value), HL
 
-    ld      L, 2(IX)
-    ld      H, 3(IX)
+    ld      L, 0(IX)
+    ld      H, 1(IX)
 
     ld      (__longjmp_tmp_env), HL
 
