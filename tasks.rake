@@ -42,7 +42,6 @@ namespace 'lib' do
             end
 
             cmd = "sdcclib #{File.join(HERE, lib)}.lib #{dependencies.ext('.rel').to_a.join(" ")}"
-            puts cmd
             system(cmd)
         end
 

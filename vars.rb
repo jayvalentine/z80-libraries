@@ -10,3 +10,4 @@ LIB_EXCLUDE = ["config", "include", "crt0", ".lib", "tmp"]
 
 CRT0 = File.join(HERE, 'crt0.asm')
 PROCESS_CRT0 = File.join(HERE, 'process_crt0.asm')
+PROCESS_CRT0_OBJ = File.join(HERE, 'process_crt0.rel')
