@@ -4,8 +4,12 @@
     .globl  _puts
 
 _gets:
-    push    HL
-    pop     DE
+    push    IX
+    
+    ld      IX, #4
+    add     IX, SP
+    ld      E, 0(IX)
+    ld      D, 1(IX)
 
 __gets_loop:
     ; Get a char from serial port and test
@@ -28,10 +32,13 @@ __gets_loop:
     ld      (DE), A
     inc     DE
 
-    push    HL
+    push    DE
     ld      L, A
+    ld      H, #0
+    push    HL
     call    _putchar
     pop     HL
+    pop     DE
 
     jp      __gets_loop
 
@@ -51,7 +58,9 @@ __gets_backspace_send:
     push    HL
     push    DE
     ld      HL, #__backspace_str
+    push    HL
     call    _puts
+    pop     HL
     pop     DE
     pop     HL
 
@@ -66,8 +75,11 @@ __gets_done:
     ld      (DE), A
 
     ld      HL, #__newline
+    push    HL
     call    _puts
+    pop     HL
 
+    pop     IX
     ret
 
     ; Implements a backspace.
