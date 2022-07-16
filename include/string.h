@@ -10,7 +10,6 @@ int strcmp(const char *s1, const char *s2);
 
 size_t strlen(const char * s);
 
-char * strtok(char * s1, const char * s2);
 char * strchr(const char * s, int c);
 char * strcpy(char * s1, const char * s2);
 
