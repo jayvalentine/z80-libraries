@@ -51,6 +51,8 @@
 
     ; void syscall_smode(uint8_t mode)
 _syscall_smode:
+    push    IX
+
     ; Get parameters.
     ld      HL, #2
     add     HL, SP
@@ -61,10 +63,14 @@ _syscall_smode:
     ld      A, #SMODE
     rst     48
 
+    pop     IX
+
     ret
 
     ; void syscall_dwrite(char * buf, #uint32_t sector)
 _syscall_dwrite:
+    push    IX
+
     ; Get parameters.
     ld      HL, #2
     add     HL, SP
@@ -87,10 +93,14 @@ _syscall_dwrite:
     ld      A, #DWRITE
     rst     48
 
+    pop     IX
+
     ret
 
     ; void syscall_dread(char * buf, #uint32_t sector)
 _syscall_dread:
+    push    IX
+
     ; Get parameters.
     ld      HL, #2
     add     HL, SP
@@ -113,13 +123,19 @@ _syscall_dread:
     ld      A, #DREAD
     rst     48
 
+    pop     IX
+
     ret
 
     ; DiskInfo_T * syscall_dinfo(void)
 _syscall_dinfo:
+    push    IX
+
     ; Call dinfo syscall.
     ld      A, #DINFO
     rst     48
+
+    pop     IX
 
     ret
 
@@ -230,6 +246,8 @@ _syscall_fclose:
 
     ; int syscall_finfo(const char * filename, #FINFO * finfo)
 _syscall_finfo:
+    push    IX
+
     ld      HL, #2
     add     HL, SP
 
@@ -244,16 +262,25 @@ _syscall_finfo:
     ld      A, #FINFO
     rst     48
 
+    pop     IX
+
     ret
 
     ; int syscall_fentries(void)
 _syscall_fentries:
+    push    IX
+
     ld      A, #FENTRIES
     rst     48
+
+    pop     IX
+
     ret
 
-    ; int syscall_fentry(char * s, #int entry)
+    ; int syscall_fentry(char * s, int entry)
 _syscall_fentry:
+    push    IX
+
     ld      HL, #2
     add     HL, SP
 
@@ -268,6 +295,8 @@ _syscall_fentry:
     ld      A, #FENTRY
     rst     48
     
+    pop     IX
+
     ret
 
     ; int syscall_pspawn(int pd, char ** argv, size_t argc)
