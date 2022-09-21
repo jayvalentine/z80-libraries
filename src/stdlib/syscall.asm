@@ -53,8 +53,8 @@
 _syscall_smode:
     push    IX
 
-    ; Get parameters.
-    ld      HL, #2
+    ; Get parameters. Skip return value and IX on stack.
+    ld      HL, #4
     add     HL, SP
 
     ; Mode in C.
@@ -71,8 +71,8 @@ _syscall_smode:
 _syscall_dwrite:
     push    IX
 
-    ; Get parameters.
-    ld      HL, #2
+    ; Get parameters. Skip return value and IX on stack.
+    ld      HL, #4
     add     HL, SP
 
     push    HL
@@ -101,8 +101,8 @@ _syscall_dwrite:
 _syscall_dread:
     push    IX
 
-    ; Get parameters.
-    ld      HL, #2
+    ; Get parameters. Skip return value and IX on stack.
+    ld      HL, #4
     add     HL, SP
 
     push    HL
@@ -143,7 +143,7 @@ _syscall_dinfo:
 _syscall_fopen:
     push    IX
 
-    ; Get parameters.
+    ; Get parameters. Skip return value and IX on stack.
     ld      HL, #4
     add     HL, SP
 
@@ -168,7 +168,7 @@ _syscall_fopen:
 _syscall_fread:
     push    IX
 
-    ; Get parameters
+    ; Get parameters. Skip return value and IX on stack.
     ld      HL, #4
     add     HL, SP
 
@@ -198,7 +198,7 @@ _syscall_fread:
 _syscall_fwrite:
     push    IX
 
-    ; Get parameters
+    ; Get parameters. Skip return value and IX on stack.
     ld      HL, #4
     add     HL, SP
 
@@ -228,6 +228,7 @@ _syscall_fwrite:
 _syscall_fclose:
     push    IX
 
+    ; Get parameters. Skip return value and IX on stack.
     ld      HL, #4
     add     HL, SP
 
@@ -248,7 +249,8 @@ _syscall_fclose:
 _syscall_finfo:
     push    IX
 
-    ld      HL, #2
+    ; Get parameters. Skip return value and IX on stack.
+    ld      HL, #4
     add     HL, SP
 
     push    HL
@@ -281,7 +283,8 @@ _syscall_fentries:
 _syscall_fentry:
     push    IX
 
-    ld      HL, #2
+    ; Get parameters. Skip return value and IX on stack.
+    ld      HL, #4
     add     HL, SP
 
     push    HL
@@ -303,6 +306,7 @@ _syscall_fentry:
 _syscall_pspawn:
     push    IX
 
+    ; Get parameters. Skip return value and IX on stack.
     ld      HL, #4
     add     HL, SP
 
@@ -326,6 +330,7 @@ _syscall_pspawn:
 _syscall_sighandle:
     push    IX
 
+    ; Get parameters. Skip return value and IX on stack.
     ld      HL, #4
     add     HL, SP
 
@@ -347,6 +352,7 @@ _syscall_sighandle:
 _syscall_fdelete:
     push    IX
 
+    ; Get parameters. Skip return value and IX on stack.
     ld      HL, #4
     add     HL, SP
 
@@ -366,6 +372,7 @@ _syscall_fdelete:
 _syscall_pload:
     push    IX
 
+    ; Get parameters. Skip return value and IX on stack.
     ld      HL, #4
     add     HL, SP
 
@@ -392,6 +399,7 @@ _syscall_sysinfo:
 _syscall_pstate:
     push    IX
 
+    ; Get parameters. Skip return value and IX on stack.
     ld      HL, #4
     add     HL, SP
 
@@ -411,6 +419,7 @@ _syscall_pstate:
 _syscall_pexit:
     push    IX
 
+    ; Get parameters. Skip return value and IX on stack.
     ld      HL, #4
     add     HL, SP
 
@@ -430,6 +439,7 @@ _syscall_pexit:
 _syscall_pexitcode:
     push    IX
 
+    ; Get parameters. Skip return value and IX on stack.
     ld      HL, #4
     add     HL, SP
 
