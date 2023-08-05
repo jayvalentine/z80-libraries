@@ -92,8 +92,9 @@ int syscall_pspawn(int pd, char ** argv, size_t argc);
 int syscall_pexec(int pd, char ** argv, size_t argc);
 int syscall_pload(const char * filename);
 int8_t syscall_pstate(int pid);
-void syscall_pexit(int pid);
+void syscall_pexit(int exitcode);
 int syscall_pexitcode(int pid);
+void syscall_pblock(int event);
 
 void syscall_sighandle(SIGHANDLER_T handle, Signal_T sig);
 

@@ -19,6 +19,7 @@
     .globl  _syscall_pstate
     .globl  _syscall_pexit
     .globl  _syscall_pexitcode
+    .globl  _syscall_pblock
 
     .equ    DWRITE, 4
     .equ    DREAD, 6
@@ -48,6 +49,7 @@
     .equ    PSTATE, 36
     .equ    PEXIT, 38
     .equ    PEXITCODE, 40
+    .equ    PBLOCK, 42
 
     ; void syscall_smode(uint8_t mode)
 _syscall_smode:
@@ -450,6 +452,26 @@ _syscall_pexitcode:
     ld      B, 1(IX)
 
     ld      A, #PEXITCODE
+    rst     48
+
+    pop     IX
+    ret
+
+    ; void syscall_pblock(int event)
+_syscall_pblock:
+    push    IX
+
+    ; Get parameters. Skip return value and IX on stack.
+    ld      HL, #4
+    add     HL, SP
+
+    push    HL
+    pop     IX
+
+    ld      C, 0(IX)
+    ld      B, 1(IX)
+
+    ld      A, #PBLOCK
     rst     48
 
     pop     IX
