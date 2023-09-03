@@ -41,7 +41,7 @@ namespace 'lib' do
                 FileUtils.rm_r(File.join(HERE, "src", lib, "tmp"))
             end
 
-            cmd = "sdcclib #{File.join(HERE, lib)}.lib #{dependencies.ext('.rel').to_a.join(" ")}"
+            cmd = "sdar -rc #{File.join(HERE, lib)}.lib #{dependencies.ext('.rel').to_a.join(" ")}"
             system(cmd)
         end
 

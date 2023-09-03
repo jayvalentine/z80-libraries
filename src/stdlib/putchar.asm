@@ -18,3 +18,6 @@ _putchar:
     
     pop     IX
     ret
+
+__putchar_tempchar:
+    .byte   0
