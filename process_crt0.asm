@@ -14,13 +14,11 @@
 
 start:
     ; argc at 0xf800.
-    ld      HL, (0xf800)
-    push    HL
+    ld      DE, (0xf800)
     
     ; argv at 0xf810
     ld      HL, #0xf810
-    push    HL
 
     call    _user_main
-    push    HL
+    ex      DE, HL
     call    _syscall_pexit
