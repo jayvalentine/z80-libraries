@@ -9,10 +9,10 @@ _puts:
     ; Get string length in DE.
     call    _strlen
 
-    pop     BC ; String pointer.
+    pop     HL ; String pointer.
 
     ; Write to serial port.
-    ; BC - string pointer
+    ; HL - string pointer
     ; DE - length
     ld      A, #0
     rst     48

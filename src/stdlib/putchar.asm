@@ -1,22 +1,18 @@
     .globl  _putchar
     
+    ; putchar(int c)
+    ;
+    ; c will be in HL.
+    ;
+    ; NOT REENTRANT!
 _putchar:
-    push    IX
-
-    ld      HL, #4
-    add     HL, SP
-    push    HL
-
-    ; Address of byte to write on stack.
-    pop     BC
-    
-    ; Writing single byte.
+    ld      (__putchar_tempchar), HL
+    ld      HL, #__putchar_tempchar
     ld      DE, #1
 
     ld      A, #0
     rst     48
     
-    pop     IX
     ret
 
 __putchar_tempchar:
