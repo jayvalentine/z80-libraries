@@ -1,9 +1,18 @@
 #include <stdint.h>
 #include <stddef.h>
 
+/* For best performance FILE_BLOCK_SIZE should be
+ * equal to disk sector size.
+ */
+#define FILE_BLOCK_SIZE 128
+
 typedef struct _IO_FILE
 {
     int fd;
+    char buf[FILE_BLOCK_SIZE];
+    uint8_t bytes_read;
+    uint8_t buf_pos;
+    uint8_t eof;
 } FILE;
 
 /* fopen
