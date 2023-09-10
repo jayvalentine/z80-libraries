@@ -4,14 +4,14 @@
 /* For best performance FILE_BLOCK_SIZE should be
  * equal to disk sector size.
  */
-#define FILE_BLOCK_SIZE 128
+#define FILE_BLOCK_SIZE 512
 
 typedef struct _IO_FILE
 {
     int fd;
     char buf[FILE_BLOCK_SIZE];
-    uint8_t bytes_read;
-    uint8_t buf_pos;
+    uint16_t bytes_read;
+    uint16_t buf_pos;
     uint8_t eof;
 } FILE;
 
